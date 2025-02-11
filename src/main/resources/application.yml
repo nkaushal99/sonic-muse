@@ -1,1 +1,3 @@
 spring.application.name: SonicMuse
+
+aws.dynamodb.url: http://localhost:8000

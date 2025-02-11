@@ -8,7 +8,6 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortK
 @Setter
 public abstract class AbstractMapper implements PartitionKeyProvider, SortKeyProvider
 {
-
     private String partitionKey;
     private String sortKey;
     private long version;
