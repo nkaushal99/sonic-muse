@@ -2,7 +2,6 @@ package com.nikhil.sonicmuse.repository;
 
 import com.nikhil.sonicmuse.enumeration.DynamoDBTableType;
 import com.nikhil.sonicmuse.mapper.AbstractMapper;
-import jakarta.annotation.Nonnull;
 import software.amazon.awssdk.core.pagination.sync.SdkIterable;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
@@ -14,9 +13,8 @@ import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
 import java.util.Arrays;
 
 
-public abstract class AbstractRepository<T extends AbstractMapper> implements IRepository<T>
+public abstract class AbstractRepository<T extends AbstractMapper> implements SonicMuseRepository<T>
 {
-    @Nonnull
     private final DynamoDbTable<T> table;
 
     protected AbstractRepository(DynamoDbEnhancedClient dynamoDbEnhancedClient, DynamoDBTableType tableType, Class<T> clazz)
@@ -28,7 +26,7 @@ public abstract class AbstractRepository<T extends AbstractMapper> implements IR
     }
 
     @Override
-    public SdkIterable<T> get(@Nonnull String partitionKey, String sortKey)
+    public SdkIterable<T> get(String partitionKey, String sortKey)
     {
         Key key = Key.builder()
                 .partitionValue(partitionKey)
@@ -41,14 +39,19 @@ public abstract class AbstractRepository<T extends AbstractMapper> implements IR
     }
 
     @Override
-    public void put(@Nonnull T... mappers)
+    public void put(T... mappers)
     {
         Arrays.stream(mappers).forEach(table::putItem);
     }
 
     @Override
-    public void delete(@Nonnull T... mappers)
+    public void delete(T... mappers)
     {
         Arrays.stream(mappers).forEach(table::deleteItem);
+    }
+
+    public void createParentTable(DynamoDBTableType tableType)
+    {
+        table.createTable();
     }
 }

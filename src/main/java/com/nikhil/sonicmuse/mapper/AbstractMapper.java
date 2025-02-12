@@ -1,5 +1,6 @@
 package com.nikhil.sonicmuse.mapper;
 
+import lombok.NonNull;
 import lombok.Setter;
 import software.amazon.awssdk.enhanced.dynamodb.extensions.annotations.DynamoDbVersionAttribute;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
@@ -8,9 +9,10 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortK
 @Setter
 public abstract class AbstractMapper implements PartitionKeyProvider, SortKeyProvider
 {
+    @NonNull
     private String partitionKey;
     private String sortKey;
-    private long version;
+    private Long version;
 
     @DynamoDbPartitionKey
     public String getPartitionKey()
@@ -25,7 +27,7 @@ public abstract class AbstractMapper implements PartitionKeyProvider, SortKeyPro
     }
 
     @DynamoDbVersionAttribute
-    public long getVersion()
+    public Long getVersion()
     {
         return version;
     }
