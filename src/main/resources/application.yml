@@ -1,3 +1,8 @@
-spring.application.name: SonicMuse
+spring:
+  application.name: SonicMuse
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
 
 aws.dynamodb.url: http://localhost:8000

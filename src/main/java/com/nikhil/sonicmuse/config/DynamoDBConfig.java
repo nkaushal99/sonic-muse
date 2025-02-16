@@ -21,6 +21,8 @@ import software.amazon.awssdk.services.dynamodb.model.ScalarAttributeType;
 
 import java.net.URI;
 
+import static com.nikhil.sonicmuse.config.ConfigConstants.DEFAULT_REGION;
+
 @Configuration
 public class DynamoDBConfig
 {
@@ -32,7 +34,7 @@ public class DynamoDBConfig
     {
         return DynamoDbClient.builder()
                 .credentialsProvider(DefaultCredentialsProvider.create())
-                .region(Region.AP_SOUTH_1)
+                .region(DEFAULT_REGION)
                 .endpointOverride(URI.create(dynamodbUrl))
                 .build();
     }

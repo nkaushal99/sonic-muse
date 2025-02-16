@@ -30,6 +30,10 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    implementation 'commons-io:commons-io:2.18.0'
+    implementation 'org.apache.tika:tika-core:2.9.2'
+
 //    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -37,7 +41,7 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok'
 
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+//    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 //    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'

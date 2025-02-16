@@ -29,7 +29,7 @@ public class SongMapper extends AbstractMapper
     @Override
     public void buildPartitionKey()
     {
-        setPartitionKey(partitionKeyGen(id));
+        setPartitionKey(partitionKeyGen());
     }
 
     @Override
@@ -38,9 +38,9 @@ public class SongMapper extends AbstractMapper
         setSortKey(sortKeyGen(id));
     }
 
-    public static String partitionKeyGen(String id)
+    public static String partitionKeyGen()
     {
-        return KEY_PREFIX.keyGen(id);
+        return KEY_PREFIX.keyGen();
     }
 
     public static String sortKeyGen(String id)

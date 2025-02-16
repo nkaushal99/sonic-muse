@@ -49,9 +49,4 @@ public abstract class AbstractRepository<T extends AbstractMapper> implements So
     {
         Arrays.stream(mappers).forEach(table::deleteItem);
     }
-
-    public void createParentTable(DynamoDBTableType tableType)
-    {
-        table.createTable();
-    }
 }
