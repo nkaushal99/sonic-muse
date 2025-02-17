@@ -16,4 +16,11 @@ public class SongRepository extends AbstractRepository<SongMapper>
     {
         super(dynamoDbEnhancedClient, DynamoDBTableType.MAIN, SongMapper.class);
     }
+
+    public SongMapper findSongById(String songId)
+    {
+        String partitionKey = SongMapper.partitionKeyGen();
+        String sortKey = SongMapper.sortKeyGen(songId);
+        return super.get(partitionKey, sortKey).stream().findFirst().orElse(null);
+    }
 }
