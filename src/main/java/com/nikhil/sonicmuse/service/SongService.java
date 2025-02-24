@@ -47,7 +47,7 @@ public class SongService
         return ResponseEntity.status(HttpStatus.CREATED).body(songMapper.getId());
     }
 
-    public ResponseEntity<?> playSong(String songId) {
+    public ResponseEntity<String> playSong(String songId) {
         SongMapper song = songRepository.findSongById(songId);
         try {
             URL url = s3Service.createPresignedGetUrl(SONG_BUCKET, song.getS3Key());

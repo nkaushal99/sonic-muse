@@ -1,5 +1,6 @@
 package com.nikhil.sonicmuse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.tika.Tika;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,5 +19,11 @@ public class SonicMuseApplication
     public Tika tika()
     {
         return new Tika();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper()
+    {
+        return new ObjectMapper();
     }
 }

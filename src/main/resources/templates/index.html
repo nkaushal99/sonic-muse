@@ -1,0 +1,57 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Music Player</title>-->
+<!--    <link rel="stylesheet" href="./index.css">-->
+<!--</head>-->
+<!--<body>-->
+
+<!--    <div id="music-player">-->
+<!--        <h1>Music Player</h1>-->
+
+<!--        <div id="upload-area">-->
+<!--            <input type="file" id="file-upload" accept="audio/*">-->
+<!--            <label for="file-upload">Upload Song</label>-->
+<!--        </div>-->
+
+<!--        <ul id="song-list">-->
+<!--            </ul>-->
+
+<!--        <div id="player-controls">-->
+<!--           <button id="play-button">Play</button>-->
+<!--            <button id="pause-button">Pause</button>-->
+<!--        </div>-->
+
+<!--        <audio id="audio-player" controls></audio>-->
+<!--    </div>-->
+
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sonic Muse</title>
+</head>
+<body>
+<h1>Sonic Muse</h1>
+
+<label for="groupId">Group ID:</label>
+<input type="text" id="groupId" value="123">
+<button id="joinButton">Join Group</button><br><br>
+
+<label for="songUrl">Song URL:</label>
+<input type="text" id="songUrl" value="http://example.com/song.mp3">
+<button id="playButton">Play</button>
+<button id="pauseButton">Pause</button>
+<button id="seekButton">Seek (seconds):</button>
+<input type="number" id="seekValue">
+<button id="volumeButton">Volume:</button>
+<input type="number" id="volumeValue" min="0" max="1" step="0.1">
+
+<audio id="audioPlayer" controls></audio>
+
+</body>
+</html>
