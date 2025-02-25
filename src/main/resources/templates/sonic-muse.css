@@ -1,0 +1,50 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: black;
+    color: white;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 100vh;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+main {
+    width: 80%;
+}
+
+#description h1 {
+    font-size: 96px;
+    margin: 20px 0 0;
+}
+
+#description p{
+    font-size: 24px;
+    margin: 0;
+}
+
+#enter {
+    margin-top: 50px;
+    flex-direction: row;
+}
+
+a {
+    text-decoration: none;
+    font-size: 36px;
+    color: #ff006e;
+}
+
+a :hover {
+    font-size: 42px;
+}
+
+
