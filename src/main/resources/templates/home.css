@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+:root {
+    height:100%;
+}
+
 body {
     font-family: sans-serif;
     background-color: black;
@@ -68,8 +72,34 @@ section {
     justify-content: center;
     align-items: center;
     height: 100px;
-    background-color: yellow;
+    background-color: black;
     /*#121212;*/
+}
+
+#upload-area input {
+    display: none;
+}
+
+#upload-area label {
+    width: 50%;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1rem;
+    border-radius: 1rem;
+    background: radial-gradient(circle, #8730d4, #9130d4, #c31cd1, #d430c4, #d43089, #d43066, #d43049);
+    color: white;
+    font-family: sans-serif;
+    transition: all .5s;
+    box-shadow: 1px 1px 15px 3px gray;
+}
+
+#upload-area label:hover {
+    cursor: pointer;
+    transform: scale(1.1);
 }
 
 #queue {
