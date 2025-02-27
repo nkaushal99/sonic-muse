@@ -82,7 +82,7 @@ section {
     align-items: center;
     border: 1px solid #ccc;
     z-index: -1;
-    padding-bottom: 70px;
+    padding-bottom: 100px;
     /*padding: 5px;*/
     /*height: fit-content; !* Set a fixed height for scrolling *!*/
     /*overflow-y: auto; !* Enable vertical scrolling *!*/
@@ -126,7 +126,7 @@ section {
     justify-content: space-around;
     align-items: center;
     width: 100%;
-    height: 70px;
+    height: 100px;
 }
 
 #current-track {
@@ -134,94 +134,96 @@ section {
     align-items: center;
 }
 
-/*.track-number {*/
-/*    margin-right: 15px;*/
-/*    font-size: 1.2em;*/
-/*}*/
+#global-player div {
+    border: 1px solid white;
+}
 
-/*.track-image {*/
-/*    width: 50px;*/
-/*    height: 50px;*/
-/*    border-radius: 5px;*/
-/*    margin-right: 15px;*/
-/*}*/
+#audio-player {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+}
 
-/*.track-details {*/
-/*    display: flex;*/
-/*    flex-direction: column;*/
-/*}*/
+#player-controls {
+    width: 100%;
+    height: 50%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
 
-/*.track-title {*/
-/*    font-weight: bold;*/
-/*}*/
+#player-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    width: 30%;
+}
 
-/*.track-duration {*/
-/*    color: #b3b3b3;*/
-/*}*/
+.player-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+}
 
-/*#audio-player {*/
-/*    display: flex;*/
-/*    flex-direction: column;*/
-/*    align-items: center;*/
-/*    justify-content: center;*/
-/*}*/
+#volume-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30%;
+}
 
-/*#player-controls {*/
-/*    display: flex;*/
-/*    flex-direction: row;*/
-/*    align-items: center;*/
-/*    justify-content: space-between;*/
-/*}*/
+#volume-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.2em;
+    cursor: pointer;
+}
 
-/*#player-buttons {*/
-/*    display: flex;*/
-/*    flex-direction: row;*/
-/*    align-items: center;*/
-/*    justify-content: center;*/
-/*}*/
+#volume-slider {
+    width: 100px;
+    accent-color: #ff006e;
+}
 
-/*.player-btn {*/
-/*    background: none;*/
-/*    border: none;*/
-/*    color: #fff;*/
-/*    font-size: 1.5em;*/
-/*    cursor: pointer;*/
-/*}*/
+#progress-bar {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #404040;
+    border-radius: 5px;
+}
 
-/*#volume-controls {*/
-/*    display: flex;*/
-/*    align-items: center;*/
-/*    justify-content: center;*/
-/*}*/
+#progress-bar div {
+    text-align: center;
+}
 
-/*#volume-btn {*/
-/*    background: none;*/
-/*    border: none;*/
-/*    color: #fff;*/
-/*    font-size: 1.2em;*/
-/*    cursor: pointer;*/
-/*}*/
+#time-passed {
+    width: 10%;;
+}
 
-/*#volume-slider {*/
-/*    width: 100px;*/
-/*    accent-color: #ff006e;*/
-/*}*/
+#progress {
+    width: 80%;
+}
 
-/*#progress-bar {*/
-/*    display: flex;*/
-/*    flex-direction: row;*/
-/*    align-items: center;*/
-/*    justify-content: center;*/
-/*    background-color: #404040;*/
-/*    border-radius: 5px;*/
-/*}*/
+#progress input{
+    /*position: absolute;*/
+    /*top: 0;*/
+    /*left: 0;*/
+    /*height: 100%;*/
+    width: 100%; /* Example progress */
+    accent-color: #ff006e;
+    /*background-color: #ff006e;*/
+    border-radius: 5px;
+}
 
-/*#progress {*/
-/*    !*position: absolute;*!*/
-/*    !*top: 0;*!*/
-/*    !*left: 0;*!*/
-/*    !*height: 100%;*!*/
-/*    !*width: 50%; !* Example progress *!*!*/
-/*    background-color: #ff006e;*/
-/*    border-radius: 5px;*/
-/*}*/
+#duration {
+    width: 10%;
+}
