@@ -32,8 +32,16 @@ main {
     margin: 0;
 }
 
-#enter {
+#enter-party {
+    font-size: 36px;
     margin-top: 50px;
+}
+
+#enter-party input{
+    font-size: 36px;
+}
+
+#enter-btn {
     flex-direction: row;
 }
 
