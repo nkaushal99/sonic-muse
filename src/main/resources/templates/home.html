@@ -17,70 +17,82 @@
         </nav>
     </header>
 
+    <section id="upload-area">
+        <label for="song-file">
+            <span>Play my song</span>
+            <input type="file" id="song-file" accept="audio/*">
+        </label>
+    </section>
+
     <main>
-        <section id="upload-area">
-            <label for="song-file">
-                <span>Play my song</span>
-                <input type="file" id="song-file" accept="audio/*">
-            </label>
+        <section id="song-details">
+            <div id="song-list">
+                <div class="song-list-item">
+                    <div class="track-info">
+                        <div class="track-details">
+                            <span class="track-title">New York Vibe</span>
+                        </div>
+                    </div>
+                    <span class="track-duration">first 0:43</span>
+                </div>
+            </div>
         </section>
 
-        <ul id="queue">
-            <li class="queue-item">
-                <div class="track-info">
-                    <div class="track-details">
-                        <span class="track-title">New York Vibe</span>
-                    </div>
-                </div>
-                <span class="track-duration">first 0:43</span>
-            </li>
-        </ul>
-
-        <section id="global-player">
-            <div id="current-track">
-                <!--                    <img src="track-image-current.jpg" alt="Current Track" class="track-image">-->
-                <div class="track-details">
-                    <span class="track-title">Title</span>
-                    <!--                        <span class="track-genre">Genre</span>-->
-                </div>
-            </div>
-
-            <div id="audio-player">
-                <div id="player-controls">
-                    <div id="player-buttons">
-                        <div id="previous-button">
-                            <button class="player-btn">⏮</button>
-                        </div>
-                        <div id="play-button">
-                            <button class="player-btn">▶</button>
-                        </div>
-                        <div id="next-button">
-                            <button class="player-btn">⏭</button>
-                        </div>
-                    </div>
-                    <div id="volume-controls">
-                        <button id="volume-btn">🔊</button>
-                        <input type="range" min="0" max="100" value="75" id="volume-slider">
-                    </div>
-                </div>
-                <div id="progress-bar">
-                    <div id="time-passed">1</div>
-                    <div id="progress">
-                        <input type="range" min="0" max="100" value="75" id="time-slider">
-                    </div>
-                    <div id="duration">2</div>
-                </div>
-                <audio id="hidden-audio" controls>
-                    <source src="../sample-music/kk.mp3" type="audio/mpeg">
-                </audio>
-            </div>
-
-            <div id="empty-div">
-
-            </div>
+        <section id="party-details">
+            <span class="input">
+                <input id="party-id-input" type="text" placeholder="Party Id">
+                <span id="join-btn">
+                    <button>Join</button>
+                </span>
+            </span>
         </section>
     </main>
 
-<script src="../js/home.js"></script>
+    <section id="global-player">
+        <div id="current-track">
+            <!--                    <img src="track-image-current.jpg" alt="Current Track" class="track-image">-->
+            <div class="track-details">
+                <span class="track-title">Title</span>
+                <!--                        <span class="track-genre">Genre</span>-->
+            </div>
+        </div>
+
+        <div id="audio-player">
+            <div id="player-controls">
+                <div id="player-buttons">
+                    <div id="previous-button">
+                        <button class="player-btn">⏮</button>
+                    </div>
+                    <div id="play-button">
+                        <button class="player-btn">▶</button>
+                    </div>
+                    <div id="next-button">
+                        <button class="player-btn">⏭</button>
+                    </div>
+                </div>
+                <div id="volume-controls">
+                    <button id="volume-btn">🔊</button>
+                    <input type="range" min="0" max="100" value="75" id="volume-slider">
+                </div>
+            </div>
+            <div id="progress-bar">
+                <div id="time-passed">--</div>
+                <div id="progress">
+                    <input type="range" min="0" max="100" value="0" id="time-slider">
+                </div>
+                <div id="duration">--</div>
+            </div>
+            <audio id="hidden-audio" controls>
+<!--                ../sample-music/kk.mp3-->
+                <source src="" type="audio/*">
+            </audio>
+        </div>
+
+        <div id="empty-div">
+
+        </div>
+    </section>
+
+    <script src="../js/home.js"></script>
 </body>
 </html>

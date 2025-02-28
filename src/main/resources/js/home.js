@@ -1,4 +1,5 @@
 const audio = document.getElementById('hidden-audio');
+const fileUpload = document.getElementById('song-file');
 const playButton = document.getElementById('play-button').querySelector('button');
 const previousButton = document.getElementById('previous-button').querySelector('button');
 const nextButton = document.getElementById('next-button').querySelector('button');
@@ -8,68 +9,141 @@ const timeSlider = document.getElementById('time-slider');
 const timePassedDisplay = document.getElementById('time-passed');
 const durationDisplay = document.getElementById('duration');
 
-const webSocket = window.myWebSocket;
+const partyIdInput = document.getElementById('party-id-input');
+const joinButton = document.getElementById('join-btn');
 
-webSocket.onmessage = (event) => {
-    const message = JSON.parse(event.data);
-    handleMessage(message);
-};
+let webSocket;
+let partyId;
+
+function connectWebSocket() {
+    webSocket = new WebSocket(`ws://localhost:8080/audio-stream`);
+
+    webSocket.onopen = () => {
+        console.log('WebSocket connection established');
+        sendJoinMessage();
+    };
+
+    webSocket.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        handleMessage(message);
+    };
+
+    webSocket.onclose = () => {
+        console.log('WebSocket connection closed');
+    };
+
+    webSocket.onerror = (error) => {
+        console.error('WebSocket error:', error);
+    };
+}
 
 function handleMessage(message) {
     switch (message.type) {
         case 'play':
-            // audio.src = message.songUrl;
-            audio.play();
+            audio.src = message.songUrl;
+            audio.onloadedmetadata = () => {
+                timeSlider.value = message.seek;
+                audio.currentTime = (timeSlider.value / 100) * audio.duration;
+                audio.play();
+                playButton.textContent = '⏸';
+            };
             break;
         case 'pause':
             audio.pause();
+            playButton.textContent = '▶';
+            break;
+        case 'previous':
+            // audio.currentTime = 0;
+            // audio.play();
+            // playButton.textContent = '⏸';
+            // break;
+        case 'next':
+            // audio.currentTime = audio.duration;
+            // audio.play();
+            // playButton.textContent = '⏸';
             break;
         case 'seek':
-            audio.currentTime = message.position;
+            timeSlider.value = message.seek;
+            audio.currentTime = (timeSlider.value / 100) * audio.duration;
             break;
-        case 'volume':
-            audio.volume = message.volumeLevel;
-            break;
-        case 'sync':
-            audio.currentTime = message.position;
-            break;
+        // case 'volume':
+        //     audio.volume = message.volumeLevel;
+        //     break;
+        // case 'sync':
+        //     audio.currentTime = message.position;
+        //     break;
         default:
             console.log('Unknown message:', message);
     }
 }
 
-// Play/Pause functionality
-playButton.addEventListener('click', () => {
+function sendJoinMessage() {
     if (webSocket && webSocket.readyState === WebSocket.OPEN) {
         const message = {
-            type: audio.paused ? 'play' : 'pause',
+            type: 'join',
             partyId: partyId
-            // ,
-            // songUrl: songUrlInput.value
         };
         webSocket.send(JSON.stringify(message));
     }
+}
 
-    if (audio.paused) {
-        // audio.src = songUrlInput.value;
-        audio.play();
-        playButton.textContent = '⏸';
-    } else {
-        audio.pause();
-        playButton.textContent = '▶';
+joinButton.addEventListener('click', () => {
+    partyId = partyIdInput.value;
+    connectWebSocket();
+});
+
+fileUpload.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+        const songName = file.name; // Or extract name however you want
+        const songUrl = e.target.result;
+
+        songs.push({name: songName, url: songUrl});
+        renderSongList();
+    };
+
+    reader.readAsDataURL(file);
+});
+
+function renderSongList() {
+    songList.innerHTML = ''; // Clear existing list
+
+    songs.forEach((song, index) => {
+        const li = document.createElement('li');
+        li.textContent = song.name;
+        li.addEventListener('click', () => {
+            currentSongIndex = index;
+            playSong();
+            highlightCurrentSong();
+        });
+        songList.appendChild(li);
+    });
+    highlightCurrentSong(); //Highlight initial song if any
+}
+
+// Play/Pause functionality
+playButton.addEventListener('click', () => {
+    if (!audio.src)
+    {
+        alert("Pick a song first!");
+        return;
+    }
+
+    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+        const message = {
+            type: audio.paused ? 'play' : 'pause',
+            partyId: partyId,
+            songUrl: audio.currentSrc,
+            seek: timeSlider.value,
+        };
+        webSocket.send(JSON.stringify(message));
     }
 });
 
 // Volume control
 volumeSlider.addEventListener('input', () => {
-    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
-        const message = {
-            type: 'volume',
-            partyId: partyId,
-            volumeLevel: volumeSlider.value
-        };
-        webSocket.send(JSON.stringify(message));
-    }
     audio.volume = volumeSlider.value / 100;
 });
 
@@ -92,11 +166,10 @@ timeSlider.addEventListener('input', () => {
         const message = {
             type: 'seek',
             partyId: partyId,
-            position: timeSlider.value,
+            seek: timeSlider.value,
         };
         webSocket.send(JSON.stringify(message));
     }
-    audio.currentTime = (timeSlider.value / 100) * audio.duration;
 });
 
 // Update time slider and displays
@@ -120,24 +193,31 @@ function formatTime(time) {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 }
 
-// Previous and Next buttons
-previousButton.addEventListener('click', () => {
-    // Example: Go to the beginning of the track
-    audio.currentTime = 0;
-    audio.play();
-    playButton.textContent = '⏸';
-
-    // todo change the audio source here.
-});
-
-nextButton.addEventListener('click', () => {
-    // Example: Go to the end of the track
-    audio.currentTime = audio.duration;
-    audio.pause();
-    playButton.textContent = '▶';
-
-    // todo change the audio source here.
-});
+// // Previous and Next buttons
+// previousButton.addEventListener('click', () => {
+//     // Go to the beginning of the track
+//     if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+//         const message = {
+//             type: 'previous',
+//             partyId: partyId
+//         };
+//         webSocket.send(JSON.stringify(message));
+//     }
+//     // audio.currentTime = 0;
+//     // audio.play();
+//     // playButton.textContent = '⏸';
+//
+//     // todo change the audio source here.
+// });
+//
+// nextButton.addEventListener('click', () => {
+//     // Example: Go to the end of the track
+//     audio.currentTime = audio.duration;
+//     audio.pause();
+//     playButton.textContent = '▶';
+//
+//     // todo change the audio source here.
+// });
 
 // Update play button on audio end
 audio.addEventListener('ended', () => {

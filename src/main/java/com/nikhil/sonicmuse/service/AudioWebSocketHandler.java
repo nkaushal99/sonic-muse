@@ -1,4 +1,4 @@
-package com.nikhil.sonicmuse.config;
+package com.nikhil.sonicmuse.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -74,7 +74,7 @@ public class AudioWebSocketHandler extends TextWebSocketHandler
         if (parties.containsKey(partyId))
         {
             Party party = parties.get(partyId);
-            for (Attendee attendee : party.getGuests())
+            for (Attendee attendee : party.getAttendees())
             {
                 if(attendee.isOnline())
                     attendee.sendMessage(new TextMessage(json.toString()));

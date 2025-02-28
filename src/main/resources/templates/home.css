@@ -49,20 +49,9 @@ header {
     margin-left: 20px;
 }
 
-main {
-    position: absolute;
-    top: 70px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    padding: 30px;
-}
-
-section {
-    border: white 1px solid;
-}
+/*section,main {*/
+/*    border: white 1px solid;*/
+/*}*/
 
 #upload-area {
     position: fixed;
@@ -103,22 +92,33 @@ section {
     transform: scale(1.1);
 }
 
-#queue {
-    width: 100%;
+main {
     position: absolute;
-    top: 100px;
+    top: 170px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+#song-details {
+    width: 70%;
+    height: 100%;
+}
+
+#song-list {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    border: 1px solid #ccc;
-    padding-bottom: 100px;
+    /*border: 1px solid #ccc;*/
+    padding: 5px 5px 100px;
     /*padding: 5px;*/
     /*height: fit-content; !* Set a fixed height for scrolling *!*/
     /*overflow-y: auto; !* Enable vertical scrolling *!*/
 }
 
-.queue-item {
+.song-list-item {
     width: 100%;
     height: 50px;
     display: flex;
@@ -132,11 +132,11 @@ section {
     padding: 5px;
 }
 
-.queue-item:hover {
-    background-color: #eee;
+.song-list-item:hover {
+    background-color: #121212;
 }
 
-.queue-item.selected {
+.song-list-item.selected {
     background-color: lightblue; /* Highlight the currently playing song */
 }
 
@@ -146,6 +146,94 @@ section {
     align-items: center;
     justify-content: space-around;
 }
+
+#party-details {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px;
+}
+
+/*.input {*/
+/*    position: relative;*/
+/*    font-size: 1.5em;*/
+/*    background: linear-gradient(21deg, #10abff, #1beabd);*/
+/*    padding: 3px;*/
+/*    display: inline-block;*/
+/*    border-radius: 9999em;*/
+/*}*/
+
+/*.input input {*/
+/*    position: relative;*/
+/*    display: inherit;*/
+/*    border-radius: inherit;*/
+/*    margin: 0;*/
+/*    border: none;*/
+/*    outline: none;*/
+/*    padding: 0 .325em;*/
+/*    z-index: 1;*/
+/*    background: white;*/
+/*    font-size: 1em;*/
+/*    min-width: 12em;*/
+/*    color: #2e3750;*/
+/*}*/
+
+/*.input input:focus + span {*/
+/*    opacity: 1;*/
+/*    transform: scale(1);*/
+/*}*/
+
+/*!* Glow effect when input is focused *!*/
+/*.input span {*/
+/*    transform: scale(.993, .94);*/
+/*    transition: transform .5s, opacity .25s;*/
+/*    opacity: 0;*/
+
+/*    position: absolute;*/
+/*    z-index: 0;*/
+/*    margin: 4px;*/
+/*    left: 0;*/
+/*    top: 0;*/
+/*    right: 0;*/
+/*    bottom: 0;*/
+/*    border-radius: inherit;*/
+/*    pointer-events: none;*/
+
+/*    !* Fancy glow effect *!*/
+/*    box-shadow: inset 0 0 0 3px #fff,*/
+/*    0 0 0 4px #fff,*/
+/*    3px -3px 30px #1beabd,*/
+/*    -3px 3px 30px #10abff;*/
+/*}*/
+
+/*!* Placeholder styling *!*/
+/*::placeholder {*/
+/*    color: #cbd0d5;*/
+/*}*/
+
+/*!* Join Button *!*/
+/*#join-btn {*/
+/*    position: absolute;*/
+/*    right: -50px; !* Position it near the input *!*/
+/*    top: 50%;*/
+/*    transform: translateY(-50%) scale(0.9);*/
+/*    transition: transform 0.3s ease, opacity 0.2s ease;*/
+/*    opacity: 0;*/
+/*    background: white;*/
+/*    border: none;*/
+/*    border-radius: 9999em;*/
+/*    padding: 5px 10px;*/
+/*    cursor: pointer;*/
+/*    font-size: 0.9em;*/
+/*}*/
+
+/*!* Button appears when input is focused *!*/
+/*.input input:focus + #join-btn {*/
+/*    opacity: 1;*/
+/*    transform: translateY(-50%) scale(1);*/
+/*}*/
 
 #global-player {
     position: fixed;
@@ -164,9 +252,9 @@ section {
     align-items: center;
 }
 
-#global-player div {
-    border: 1px solid white;
-}
+/*#global-player div {*/
+/*    border: 1px solid white;*/
+/*}*/
 
 #audio-player {
     display: flex;
@@ -236,7 +324,8 @@ section {
 }
 
 #time-passed {
-    width: 10%;;
+    width: 10%;
+    text-align: center;
 }
 
 #progress {
@@ -244,18 +333,14 @@ section {
 }
 
 #progress input{
-    /*position: absolute;*/
-    /*top: 0;*/
-    /*left: 0;*/
-    /*height: 100%;*/
-    width: 100%; /* Example progress */
+    width: 100%;
     accent-color: #ff006e;
-    /*background-color: #ff006e;*/
     border-radius: 5px;
 }
 
 #duration {
     width: 10%;
+    text-align: center;
 }
 
 #hidden-audio {
