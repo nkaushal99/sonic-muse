@@ -2,6 +2,7 @@ package com.nikhil.sonicmuse.service;
 
 import com.nikhil.sonicmuse.enumeration.S3BucketType;
 import com.nikhil.sonicmuse.mapper.SongMapper;
+import com.nikhil.sonicmuse.pojo.SongDTO;
 import com.nikhil.sonicmuse.repository.SongRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -10,9 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.pagination.sync.SdkIterable;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,11 +27,12 @@ public class SongService
     private final S3Service s3Service;
     private final SongRepository songRepository;
 
-    public ResponseEntity<String> uploadSong(MultipartFile file)
+    public SongDTO uploadSong(SongDTO songDTO, MultipartFile file)
     {
         // save the fileName and s3 fileLocation in db
         SongMapper songMapper = new SongMapper();
-        songMapper.setTitle(file.getOriginalFilename());
+        songMapper.setTitle(songDTO.getTitle());
+        songMapper.setArtist(songDTO.getArtist());
         String key = "/SYSTEM/" + songMapper.getId();
         songMapper.setS3Key(key);
         songRepository.put(songMapper);
@@ -42,9 +46,33 @@ public class SongService
             LOGGER.error("S3 upload failed", e);
             // rollback db insert
             songRepository.delete(songMapper);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file: " + e.getMessage());
+            throw new RuntimeException("S3 upload failed", e);
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(songMapper.getId());
+
+        return createSongDTO(songMapper);
+    }
+
+    private SongDTO createSongDTO(SongMapper songMapper)
+    {
+        String songUrl = getSongUrlFromS3Key(songMapper.getS3Key());
+
+        SongDTO songDTO = new SongDTO();
+        songDTO.setId(songMapper.getId());
+        songDTO.setTitle(songMapper.getTitle());
+        songDTO.setArtist(songMapper.getArtist());
+        songDTO.setUrl(songUrl);
+        return songDTO;
+    }
+
+    private String getSongUrlFromS3Key(String s3Key)
+    {
+        return s3Service.createPresignedGetUrl(SONG_BUCKET, s3Key).toString();
+    }
+
+    public List<SongDTO> getAllSongs()
+    {
+        SdkIterable<SongMapper> allSongs = songRepository.findAllSongs();
+        return allSongs.stream().map(this::createSongDTO).toList();
     }
 
     public ResponseEntity<String> playSong(String songId) {

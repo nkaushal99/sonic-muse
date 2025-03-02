@@ -61,13 +61,18 @@ public class S3Service
      */
     public URL createPresignedGetUrl(S3BucketType bucket, String key)
     {
+        return createPresignedGetUrl(bucket, key, null);
+    }
+
+    public URL createPresignedGetUrl(S3BucketType bucket, String key, Duration signatureDuration)
+    {
         GetObjectRequest objectRequest = GetObjectRequest.builder()
                 .bucket(bucket.getExpandedName())
                 .key(key)
                 .build();
 
         GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
-                .signatureDuration(Duration.ofMinutes(10))  // The URL will expire in 10 minutes.
+                .signatureDuration(signatureDuration == null ? Duration.ofDays(7) : signatureDuration)  // The URL will expire in 10 minutes.
                 .getObjectRequest(objectRequest)
                 .build();
 

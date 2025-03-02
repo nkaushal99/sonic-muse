@@ -4,6 +4,7 @@ import com.nikhil.sonicmuse.enumeration.DynamoDBTableType;
 import com.nikhil.sonicmuse.mapper.SongMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import software.amazon.awssdk.core.pagination.sync.SdkIterable;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 
 
@@ -22,5 +23,10 @@ public class SongRepository extends AbstractRepository<SongMapper>
         String partitionKey = SongMapper.partitionKeyGen();
         String sortKey = SongMapper.sortKeyGen(songId);
         return super.get(partitionKey, sortKey).stream().findFirst().orElse(null);
+    }
+
+    public SdkIterable<SongMapper> findAllSongs()
+    {
+        return super.get(SongMapper.partitionKeyGen(), null);
     }
 }

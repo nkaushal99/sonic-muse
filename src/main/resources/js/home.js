@@ -12,6 +12,41 @@ const durationDisplay = document.getElementById('duration');
 const partyIdInput = document.getElementById('party-id-input');
 const joinButton = document.getElementById('join-btn');
 
+document.addEventListener('DOMContentLoaded', function() {
+    syncSongListWithServer();
+});
+
+async function syncSongListWithServer() {
+    await fetch('http://localhost:8080/song')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(songList => {
+            populateSongList(songList);
+        })
+        .catch(error => {
+            console.error('Error fetching song list:', error);
+        });
+}
+
+function populateSongList(songList) {
+    const songListContainer = document.getElementById('song-list');
+
+    if (!songListContainer) {
+        console.error("Song list container not found.");
+        return;
+    }
+
+    songListContainer.innerHTML = ''; // Clear previous content
+
+    songList.forEach(song => {
+        addSongToList(song);
+    });
+}
+
 let webSocket;
 let partyId;
 
@@ -39,8 +74,11 @@ function connectWebSocket() {
 
 function handleMessage(message) {
     switch (message.type) {
+        case 'sync-song-list':
+
+            break;
         case 'play':
-            audio.src = message.songUrl;
+            audio.src = message.url;
             audio.onloadedmetadata = () => {
                 timeSlider.value = message.seek;
                 audio.currentTime = (timeSlider.value / 100) * audio.duration;
@@ -92,40 +130,112 @@ joinButton.addEventListener('click', () => {
     connectWebSocket();
 });
 
-fileUpload.addEventListener('change', (event) => {
+fileUpload.addEventListener('change', function(event) {
     const file = event.target.files[0];
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-        const songName = file.name; // Or extract name however you want
-        const songUrl = e.target.result;
-
-        songs.push({name: songName, url: songUrl});
-        renderSongList();
-    };
-
-    reader.readAsDataURL(file);
+    if (file) {
+        handleUpload(file);
+        // uploadSong(file);
+    }
 });
 
-function renderSongList() {
-    songList.innerHTML = ''; // Clear existing list
+async function handleUpload(file) {
+    if (file) {
+        const song = {
+            title: file.name,
+        };
 
-    songs.forEach((song, index) => {
-        const li = document.createElement('li');
-        li.textContent = song.name;
-        li.addEventListener('click', () => {
-            currentSongIndex = index;
-            playSong();
-            highlightCurrentSong();
+        try {
+            await uploadSong(file, song);
+
+        } catch (uploadError) {
+            // Handle upload error
+            console.error('Error uploading file:', uploadError);
+        }
+    } else {
+        alert("Please select a file!");
+    }
+}
+
+function uploadSong(file, song) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('song', new Blob([JSON.stringify(song)], { type: 'application/json' }));
+
+    fetch('http://localhost:8080/song/upload', {
+        method: 'POST',
+        body: formData,
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            syncSongListWithParty();
+            // addSongToList(data); // Placeholders
+            console.log('Upload successful:', data);
+        })
+        .catch(error => {
+            console.error('Upload failed:', error);
+            alert('Upload failed. Please try again.');
         });
-        songList.appendChild(li);
+}
+
+function syncSongListWithParty() {
+    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+        const message = {
+            type: 'sync-song-list',
+            partyId: partyId
+        };
+        webSocket.send(JSON.stringify(message));
+    }
+}
+
+function addSongToList(song) {
+    const songListContainer = document.getElementById('song-list');
+    const songItem = document.createElement('div');
+    songItem.classList.add('song-list-item');
+
+    const trackInfo = document.createElement('div');
+    trackInfo.classList.add('track-info');
+
+    const trackTitle = document.createElement('span');
+    trackTitle.classList.add('track-title');
+    trackTitle.textContent = song.title;
+
+    const trackDuration = document.createElement('span');
+    trackDuration.classList.add('track-duration');
+    trackDuration.textContent = song.duration;
+
+    trackInfo.appendChild(trackTitle);
+    songItem.appendChild(trackInfo);
+    songItem.appendChild(trackDuration);
+    songItem.dataset.url = song.url;
+
+    // Add a click listener to play the song
+    songItem.addEventListener('click', () => {
+        playNewSong(song);
     });
-    highlightCurrentSong(); //Highlight initial song if any
+
+    songListContainer.appendChild(songItem);
+}
+
+function playNewSong(song) {
+    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+        const message = {
+            type: 'play',
+            partyId: partyId,
+            url: song.url,
+            seek: 0,
+        };
+        webSocket.send(JSON.stringify(message));
+    }
 }
 
 // Play/Pause functionality
 playButton.addEventListener('click', () => {
-    if (!audio.src)
+    if (!audio.currentSrc)
     {
         alert("Pick a song first!");
         return;
@@ -135,7 +245,7 @@ playButton.addEventListener('click', () => {
         const message = {
             type: audio.paused ? 'play' : 'pause',
             partyId: partyId,
-            songUrl: audio.currentSrc,
+            url: audio.currentSrc,
             seek: timeSlider.value,
         };
         webSocket.send(JSON.stringify(message));

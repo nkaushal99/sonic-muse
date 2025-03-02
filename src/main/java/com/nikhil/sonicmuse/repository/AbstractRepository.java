@@ -9,6 +9,7 @@ import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.util.Arrays;
 
@@ -26,15 +27,17 @@ public abstract class AbstractRepository<T extends AbstractMapper> implements So
     }
 
     @Override
-    public SdkIterable<T> get(String partitionKey, String sortKey)
-    {
-        Key key = Key.builder()
-                .partitionValue(partitionKey)
-                .sortValue(sortKey)
-                .build();
+    public SdkIterable<T> get(String partitionKey, String sortKey) {
+        Key.Builder keyBuilder = Key.builder().partitionValue(partitionKey);
+
+        if (sortKey != null) {
+            keyBuilder.sortValue(sortKey);
+        }
+
         QueryEnhancedRequest request = QueryEnhancedRequest.builder()
-                .queryConditional(QueryConditional.keyEqualTo(key))
+                .queryConditional(QueryConditional.keyEqualTo(keyBuilder.build()))
                 .build();
+
         return table.query(request).items();
     }
 
