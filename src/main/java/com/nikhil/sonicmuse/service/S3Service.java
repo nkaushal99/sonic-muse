@@ -6,19 +6,24 @@ import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
 import javax.annotation.PreDestroy;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -81,5 +86,50 @@ public class S3Service
         LOGGER.info("HTTP method: [{}]", presignedRequest.httpRequest().method());
 
         return presignedRequest.url();
+    }
+
+    /**
+     * Create a presigned URL to use in a subsequent PUT request
+     */
+    public URL createPresignedPutUrl(S3BucketType bucket, String key)
+    {
+        return createPresignedPutUrl(bucket, key, null);
+    }
+
+    public URL createPresignedPutUrl(S3BucketType bucket, String key, Map<String, String> metadata)
+    {
+        PutObjectRequest objectRequest = PutObjectRequest.builder()
+                .bucket(bucket.getExpandedName())
+                .key(key)
+                .metadata(metadata)
+                .build();
+
+        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(10))  // The URL expires in 10 minutes.
+                .putObjectRequest(objectRequest)
+                .build();
+
+
+        PresignedPutObjectRequest presignedRequest = s3Presigner.presignPutObject(presignRequest);
+        LOGGER.info("Presigned URL to upload a file to: [{}]", presignedRequest.url().toString());
+        LOGGER.info("HTTP method: [{}]", presignedRequest.httpRequest().method());
+
+        return presignedRequest.url();
+    }
+
+    public void delete(S3BucketType bucket, String key)
+    {
+        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                .bucket(bucket.getExpandedName())
+                .key(key)
+                .build();
+
+        try {
+            s3Client.deleteObject(deleteObjectRequest);
+        } catch (SdkClientException e) {
+            LOGGER.error("Amazon S3 couldn't be contacted for a response, or the client " +
+                    "couldn't parse the response from Amazon S3.", e);
+            throw new RuntimeException(e);
+        }
     }
 }

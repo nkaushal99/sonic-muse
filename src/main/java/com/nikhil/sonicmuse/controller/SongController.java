@@ -10,10 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URL;
 import java.util.List;
 
 @RestController
@@ -24,16 +23,16 @@ public class SongController {
     private final SongService songService;
 
     @PostMapping("/upload")
-    public ResponseEntity<SongDTO> uploadSong(@RequestBody SongDTO songDTO, @RequestParam("file") MultipartFile file) {
-        SongDTO response;
+    public ResponseEntity<String> uploadSong(@RequestBody SongDTO songDTO) {
+        URL s3PutUrl;
         try
         {
-            response = songService.uploadSong(songDTO, file);
+            s3PutUrl = songService.uploadSong(songDTO);
         } catch (Exception e)
         {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(s3PutUrl.toString());
     }
 
     @GetMapping

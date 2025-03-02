@@ -1,29 +1,24 @@
 package com.nikhil.sonicmuse;
 
 
-import com.nikhil.sonicmuse.mapper.SongMapper;
-import com.nikhil.sonicmuse.repository.SonicMuseRepository;
+import com.nikhil.sonicmuse.repository.SongRepository;
+import com.nikhil.sonicmuse.service.SongService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.List;
 
 @SpringBootTest
 class SonicMuseApplicationTests
 {
     @Autowired
-    private SonicMuseRepository<SongMapper> songRepository;
+    private SongRepository songRepository;
+    @Autowired
+    private SongService songService;
 
 
     @Test
-    public void testSongMapperSave() throws InterruptedException
+    public void test()
     {
-        SongMapper songMapper = new SongMapper();
-        songRepository.put(songMapper);
-        Thread.sleep(2000);
-        List<SongMapper> mapper = songRepository.get(songMapper.getPartitionKey(), songMapper.getSortKey()).stream().toList();
-//        songRepository.get("Q", "s");
-        System.out.println(13);
+//        songService.deleteSong("55e4d293-5bf7-474f-9916-343e3b657481");
     }
 }

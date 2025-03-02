@@ -12,24 +12,29 @@ const durationDisplay = document.getElementById('duration');
 const partyIdInput = document.getElementById('party-id-input');
 const joinButton = document.getElementById('join-btn');
 
-document.addEventListener('DOMContentLoaded', function() {
-    syncSongListWithServer();
+const baseUrl = 'http://localhost:8080';
+
+document.addEventListener('DOMContentLoaded', async function() {
+    await syncSongListWithServer();
 });
 
 async function syncSongListWithServer() {
-    await fetch('http://localhost:8080/song')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(songList => {
-            populateSongList(songList);
-        })
-        .catch(error => {
-            console.error('Error fetching song list:', error);
-        });
+    let songList;
+
+    try {
+        songList = await fetch(baseUrl + '/song')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            });
+    } catch (uploadError) {
+        console.error('Error fetching songs:', uploadError);
+    }
+
+    populateSongList(songList);
+
 }
 
 function populateSongList(songList) {
@@ -58,9 +63,9 @@ function connectWebSocket() {
         sendJoinMessage();
     };
 
-    webSocket.onmessage = (event) => {
+    webSocket.onmessage = async (event) => {
         const message = JSON.parse(event.data);
-        handleMessage(message);
+        await handleMessage(message);
     };
 
     webSocket.onclose = () => {
@@ -72,10 +77,10 @@ function connectWebSocket() {
     };
 }
 
-function handleMessage(message) {
+async function handleMessage(message) {
     switch (message.type) {
-        case 'sync-song-list':
-
+        case 'sync_song_list':
+            await syncSongListWithServer();
             break;
         case 'play':
             audio.src = message.url;
@@ -130,11 +135,11 @@ joinButton.addEventListener('click', () => {
     connectWebSocket();
 });
 
-fileUpload.addEventListener('change', function(event) {
+fileUpload.addEventListener('change', async function(event) {
     const file = event.target.files[0];
     if (file) {
-        handleUpload(file);
-        // uploadSong(file);
+        await handleUpload(file);
+        await syncSongListWithParty();
     }
 });
 
@@ -148,7 +153,6 @@ async function handleUpload(file) {
             await uploadSong(file, song);
 
         } catch (uploadError) {
-            // Handle upload error
             console.error('Error uploading file:', uploadError);
         }
     } else {
@@ -156,36 +160,47 @@ async function handleUpload(file) {
     }
 }
 
-function uploadSong(file, song) {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('song', new Blob([JSON.stringify(song)], { type: 'application/json' }));
-
-    fetch('http://localhost:8080/song/upload', {
-        method: 'POST',
-        body: formData,
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            syncSongListWithParty();
-            // addSongToList(data); // Placeholders
-            console.log('Upload successful:', data);
-        })
-        .catch(error => {
-            console.error('Upload failed:', error);
-            alert('Upload failed. Please try again.');
+async function uploadSong(file, song) {
+    try {
+        // 1. Get the pre-signed URL from the server.
+        const urlResponse = await fetch(baseUrl + '/song/upload', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(song),
         });
+
+        if (!urlResponse.ok) {
+            throw new Error('Failed to get upload URL: ' + urlResponse.statusText);
+        }
+
+        const s3UploadUrl = await urlResponse.text();
+
+        // 2. Upload the file to S3.
+        const s3Response = await fetch(s3UploadUrl, {
+            method: 'PUT',
+            body: file,
+            headers: {
+                'Content-Type': file.type,
+            },
+        });
+
+        if (!s3Response.ok) {
+            throw new Error('Failed to upload to S3: ' + s3Response.statusText);
+        }
+
+        console.log('Upload to S3 successful!');
+    } catch (error) {
+        console.error('Upload failed:', error);
+        alert('Upload failed. Please try again.');
+    }
 }
 
 function syncSongListWithParty() {
     if (webSocket && webSocket.readyState === WebSocket.OPEN) {
         const message = {
-            type: 'sync-song-list',
+            type: 'sync_song_list',
             partyId: partyId
         };
         webSocket.send(JSON.stringify(message));

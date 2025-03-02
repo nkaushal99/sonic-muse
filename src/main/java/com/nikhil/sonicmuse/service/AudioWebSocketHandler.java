@@ -48,7 +48,7 @@ public class AudioWebSocketHandler extends TextWebSocketHandler
             switch (messageType)
             {
                 case JOIN -> handleJoin(session, json);
-                case PLAY, PAUSE, SEEK, VOLUME, SYNC -> broadcastMessage(json);
+                case PLAY, PAUSE, SEEK, VOLUME, SYNC_SONG_LIST -> broadcastMessage(json);
                 default -> LOGGER.warn("Unknown message type: {}", messageType);
             }
         } catch (IOException e)

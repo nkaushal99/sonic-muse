@@ -8,5 +8,5 @@ public enum PlayerMessageType
     PAUSE,
     SEEK,
     VOLUME,
-    SYNC
+    SYNC_SONG_LIST
 }

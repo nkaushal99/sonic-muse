@@ -27,29 +27,18 @@ public class SongService
     private final S3Service s3Service;
     private final SongRepository songRepository;
 
-    public SongDTO uploadSong(SongDTO songDTO, MultipartFile file)
+    public URL uploadSong(SongDTO songDTO)
     {
-        // save the fileName and s3 fileLocation in db
         SongMapper songMapper = new SongMapper();
         songMapper.setTitle(songDTO.getTitle());
         songMapper.setArtist(songDTO.getArtist());
         String key = "/SYSTEM/" + songMapper.getId();
         songMapper.setS3Key(key);
         songRepository.put(songMapper);
-        System.out.println("Song saved in db");
 
-        // save the file in s3
-        try {
-            s3Service.uploadFile(SONG_BUCKET, key, file.getBytes());
-            System.out.println("Song saved in s3");
-        } catch (IOException e) {
-            LOGGER.error("S3 upload failed", e);
-            // rollback db insert
-            songRepository.delete(songMapper);
-            throw new RuntimeException("S3 upload failed", e);
-        }
+        System.out.println("Song details saved in db");
 
-        return createSongDTO(songMapper);
+        return s3Service.createPresignedPutUrl(S3BucketType.DATA, key);
     }
 
     private SongDTO createSongDTO(SongMapper songMapper)
@@ -73,6 +62,13 @@ public class SongService
     {
         SdkIterable<SongMapper> allSongs = songRepository.findAllSongs();
         return allSongs.stream().map(this::createSongDTO).toList();
+    }
+
+    public void deleteSong(String songId)
+    {
+        s3Service.delete(SONG_BUCKET, songId);
+        SongMapper songMapper = songRepository.findSongById(songId);
+        songRepository.delete(songMapper);
     }
 
     public ResponseEntity<String> playSong(String songId) {
