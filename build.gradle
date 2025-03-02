@@ -28,12 +28,18 @@ dependencies {
     implementation 'software.amazon.awssdk:s3'
     implementation 'software.amazon.awssdk:dynamodb-enhanced'
 
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+//    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // exclude tomcat dependency as we will be deploying on AWS Lambda
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
+    implementation 'com.amazonaws.serverless:aws-serverless-java-container-springboot2:1.9.4'
+
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
     implementation 'commons-io:commons-io:2.18.0'
-    implementation 'org.apache.tika:tika-core:2.9.2'
+//    implementation 'org.apache.tika:tika-core:2.9.2'
 
 //    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
 
@@ -49,6 +55,16 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+tasks.register('buildZip', Zip) {
+    from compileJava
+    from processResources
+    into('lib') {
+        from configurations.runtimeClasspath
+    }
 }
+
+build.dependsOn buildZip
+
+//tasks.named('test') {
+//    useJUnitPlatform()
+//}

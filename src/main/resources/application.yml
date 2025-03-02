@@ -5,4 +5,5 @@ spring:
       max-file-size: 20MB
       max-request-size: 20MB
 
-aws.dynamodb.url: http://localhost:8000
+aws.dynamodb.url: https://dynamodb.ap-south-1.amazonaws.com
+#  http://localhost:8000
