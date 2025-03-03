@@ -1,9 +1,0 @@
-spring:
-  application.name: SonicMuse
-  servlet:
-    multipart:
-      max-file-size: 20MB
-      max-request-size: 20MB
-
-aws.dynamodb.url: https://dynamodb.ap-south-1.amazonaws.com
-#  http://localhost:8000

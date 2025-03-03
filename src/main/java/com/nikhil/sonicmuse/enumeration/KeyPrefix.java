@@ -1,13 +1,22 @@
 package com.nikhil.sonicmuse.enumeration;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public enum KeyPrefix
 {
-    SONG("SONG");
+    SONG("SONG"),
+    PARTY("PARTY"),
+    ATTENDEE("ATTENDEE");
 
     private final String prefix;
+
+    KeyPrefix(String prefix)
+    {
+        this.prefix = prefix;
+    }
+
+    public String getPrefix()
+    {
+        return prefix;
+    }
 
     public String keyGen(String... items)
     {

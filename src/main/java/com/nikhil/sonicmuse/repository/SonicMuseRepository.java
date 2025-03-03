@@ -6,6 +6,8 @@ import software.amazon.awssdk.core.pagination.sync.SdkIterable;
 public interface SonicMuseRepository<T extends AbstractMapper>
 {
     SdkIterable<T> get(String partitionKey, String sortKey);
+
     void put(T... mappers);
+
     void delete(T... mappers);
 }

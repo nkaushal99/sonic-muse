@@ -4,28 +4,34 @@ import com.nikhil.sonicmuse.enumeration.S3BucketType;
 import com.nikhil.sonicmuse.mapper.SongMapper;
 import com.nikhil.sonicmuse.pojo.SongDTO;
 import com.nikhil.sonicmuse.repository.SongRepository;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.pagination.sync.SdkIterable;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
 public class SongService
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(SongService.class);
     private static final S3BucketType SONG_BUCKET = S3BucketType.DATA;
 
-    private final S3Service s3Service;
-    private final SongRepository songRepository;
+    private static SongService instance;
+
+    private final S3Service s3Service = S3Service.getInstance();
+    private final SongRepository songRepository = SongRepository.getInstance();
+
+    private SongService()
+    {
+    }
+
+    public static SongService getInstance()
+    {
+        if (instance == null)
+            instance = new SongService();
+        return instance;
+    }
+
 
     public URL uploadSong(SongDTO songDTO)
     {
@@ -71,13 +77,13 @@ public class SongService
         songRepository.delete(songMapper);
     }
 
-    public ResponseEntity<String> playSong(String songId) {
-        SongMapper song = songRepository.findSongById(songId);
-        try {
-            URL url = s3Service.createPresignedGetUrl(SONG_BUCKET, song.getS3Key());
-            return ResponseEntity.status(HttpStatus.FOUND).location(url.toURI()).build(); // Redirect to S3 URL
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error playing song: " + e.getMessage());
-        }
-    }
+//    public ResponseEntity<String> playSong(String songId) {
+//        SongMapper song = songRepository.findSongById(songId);
+//        try {
+//            URL url = s3Service.createPresignedGetUrl(SONG_BUCKET, song.getS3Key());
+//            return ResponseEntity.status(HttpStatus.FOUND).location(url.toURI()).build(); // Redirect to S3 URL
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error playing song: " + e.getMessage());
+//        }
+//    }
 }

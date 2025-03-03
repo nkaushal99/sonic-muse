@@ -1,7 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.7.6'
-    id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group = 'com.nikhil'
@@ -13,49 +12,33 @@ java {
     }
 }
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation platform('software.amazon.awssdk:bom:2.30.16')
+    implementation platform("software.amazon.awssdk:bom:$awsBomVersion")
     implementation 'software.amazon.awssdk:s3'
     implementation 'software.amazon.awssdk:dynamodb-enhanced'
+    implementation 'software.amazon.awssdk:apigatewaymanagementapi'
+    implementation 'software.amazon.awssdk:url-connection-client'
 
-//    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'com.amazonaws.serverless:aws-serverless-java-container-jersey:2.1.2'
 
-    // exclude tomcat dependency as we will be deploying on AWS Lambda
-    implementation('org.springframework.boot:spring-boot-starter-web') {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
-    }
-    implementation 'com.amazonaws.serverless:aws-serverless-java-container-springboot2:1.9.4'
+    implementation platform("org.glassfish.jersey:jersey-bom:$jerseyVersion")
+    implementation(
+            'org.glassfish.jersey.containers:jersey-container-jetty-http',
+            'org.glassfish.jersey.inject:jersey-hk2',
+            'org.glassfish.jersey.media:jersey-media-json-jackson',
+            'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    )
 
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
-
-    implementation 'commons-io:commons-io:2.18.0'
-//    implementation 'org.apache.tika:tika-core:2.9.2'
-
-//    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-    compileOnly 'org.projectlombok:lombok'
-
-//    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-//    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
-
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    annotationProcessor 'org.projectlombok:lombok'
+    implementation 'com.amazonaws:aws-lambda-java-core:1.2.3'
+    implementation 'com.amazonaws:aws-lambda-java-events:3.14.0'
 }
 
-tasks.register('buildZip', Zip) {
+task buildZip(type: Zip) {
+    archiveBaseName = "sonic-muse"
     from compileJava
     from processResources
     into('lib') {
@@ -63,8 +46,3 @@ tasks.register('buildZip', Zip) {
     }
 }
 
-build.dependsOn buildZip
-
-//tasks.named('test') {
-//    useJUnitPlatform()
-//}

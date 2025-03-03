@@ -2,6 +2,7 @@ package com.nikhil.sonicmuse.repository;
 
 import com.nikhil.sonicmuse.enumeration.DynamoDBTableType;
 import com.nikhil.sonicmuse.mapper.AbstractMapper;
+import com.nikhil.sonicmuse.util.cache.InstanceCache;
 import software.amazon.awssdk.core.pagination.sync.SdkIterable;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
@@ -9,7 +10,6 @@ import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
-import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import java.util.Arrays;
 
@@ -18,10 +18,11 @@ public abstract class AbstractRepository<T extends AbstractMapper> implements So
 {
     private final DynamoDbTable<T> table;
 
-    protected AbstractRepository(DynamoDbEnhancedClient dynamoDbEnhancedClient, DynamoDBTableType tableType, Class<T> clazz)
+    protected AbstractRepository(Class<T> clazz)
     {
+        DynamoDbEnhancedClient dynamoDbEnhancedClient = InstanceCache.ddbEnhancedClient.getInstance();
         this.table = dynamoDbEnhancedClient.table(
-                tableType.getExpandedName(),
+                DynamoDBTableType.MAIN.getExpandedName(),
                 TableSchema.fromClass(clazz)
         );
     }

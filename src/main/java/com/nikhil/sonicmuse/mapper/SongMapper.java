@@ -3,12 +3,8 @@ package com.nikhil.sonicmuse.mapper;
 
 import com.nikhil.sonicmuse.enumeration.KeyPrefix;
 import com.nikhil.sonicmuse.util.CommonUtil;
-import lombok.Getter;
-import lombok.Setter;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 
-@Getter
-@Setter
 @DynamoDbBean
 public class SongMapper extends AbstractMapper
 {
@@ -46,5 +42,45 @@ public class SongMapper extends AbstractMapper
     public static String sortKeyGen(String id)
     {
         return KEY_PREFIX.keyGen(id);
+    }
+
+    public String getId()
+    {
+        return id;
+    }
+
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+
+    public String getTitle()
+    {
+        return title;
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+
+    public String getArtist()
+    {
+        return artist;
+    }
+
+    public void setArtist(String artist)
+    {
+        this.artist = artist;
+    }
+
+    public String getS3Key()
+    {
+        return s3Key;
+    }
+
+    public void setS3Key(String s3Key)
+    {
+        this.s3Key = s3Key;
     }
 }

@@ -1,10 +1,9 @@
 package com.nikhil.sonicmuse.service;
 
 import com.nikhil.sonicmuse.enumeration.S3BucketType;
-import lombok.RequiredArgsConstructor;
+import com.nikhil.sonicmuse.util.cache.InstanceCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
@@ -16,25 +15,28 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequ
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
-import javax.annotation.PreDestroy;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Map;
 
-@Service
-@RequiredArgsConstructor
 public class S3Service
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(S3Service.class);
 
-    private final S3Client s3Client;
-    private final S3Presigner s3Presigner;
-//    private final Tika tika;
+    private static S3Service instance;
 
-    @PreDestroy
-    private void cleanup()
+    private final S3Client s3Client = InstanceCache.s3Client.getInstance();
+    private final S3Presigner s3Presigner = InstanceCache.s3Presigner.getInstance();
+
+    private S3Service()
     {
-        s3Presigner.close();
+    }
+
+    public static S3Service getInstance()
+    {
+        if (instance == null)
+            instance = new S3Service();
+        return instance;
     }
 
 //    public void uploadFile(S3BucketType bucket, String key, byte[] bytes) throws IOException
