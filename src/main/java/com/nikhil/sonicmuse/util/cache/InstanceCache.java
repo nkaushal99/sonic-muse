@@ -47,7 +47,7 @@ public class InstanceCache
                     .region(Region.of(System.getenv(SdkSystemSetting.AWS_REGION.environmentVariable())))
                     .build());
 
-    public static final SimpleCache<ApiGatewayManagementApiClient> apiGatewayManagementApiClient =
+    public static final SimpleCache<ApiGatewayManagementApiClient> apiGatewayClient =
             new SimpleCache<>(() -> ApiGatewayManagementApiClient.builder()
                     .credentialsProvider(CREDENTIALS_PROVIDER)
                     .region(Region.of(System.getenv(SdkSystemSetting.AWS_REGION.environmentVariable())))

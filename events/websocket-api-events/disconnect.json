@@ -1,0 +1,12 @@
+{
+  "requestContext": {
+    "connectionId": "connectionId",
+    "eventType": "DISCONNECT",
+    "routeKey": "$disconnect",
+    "apiId": "apiId",
+    "domainName": "domainName",
+    "stage": "stage",
+    "disconnectedAt": 1678886400000
+  },
+  "isBase64Encoded": false
+}

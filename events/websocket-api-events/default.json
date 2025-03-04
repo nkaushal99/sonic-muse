@@ -1,0 +1,13 @@
+{
+  "requestContext": {
+    "connectionId": "connectionId",
+    "eventType": "MESSAGE",
+    "routeKey": "$default",
+    "apiId": "apiId",
+    "domainName": "domainName",
+    "stage": "stage",
+    "messageId": "messageId"
+  },
+  "body": "{\"type\":\"JOIN\",\"partyId\":\"123\"}",
+  "isBase64Encoded": false
+}

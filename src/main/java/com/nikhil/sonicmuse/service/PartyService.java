@@ -97,6 +97,11 @@ public class PartyService
 
     public void saveParty(PartyMapper partyMapper)
     {
+        if (partyMapper.isMarkedForDeletion())
+        {
+            partyRepository.delete(partyMapper);
+            return;
+        }
         partyRepository.put(partyMapper);
     }
 

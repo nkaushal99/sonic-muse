@@ -35,6 +35,8 @@ dependencies {
 
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.3'
     implementation 'com.amazonaws:aws-lambda-java-events:3.14.0'
+
+    implementation 'ch.qos.logback:logback-classic:1.5.15'
 }
 
 task buildZip(type: Zip) {

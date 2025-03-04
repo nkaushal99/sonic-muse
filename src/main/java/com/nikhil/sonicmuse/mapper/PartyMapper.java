@@ -4,6 +4,7 @@ package com.nikhil.sonicmuse.mapper;
 import com.nikhil.sonicmuse.enumeration.KeyPrefix;
 import com.nikhil.sonicmuse.util.CommonUtil;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbIgnore;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ public class PartyMapper extends AbstractMapper
     private String id;
     private Set<String> attendeeIds;
     private String hostId;
+    private boolean markForDeletion;
 
     public PartyMapper()
     {
@@ -72,18 +74,24 @@ public class PartyMapper extends AbstractMapper
         return connectionId.equals(getHostId());
     }
 
-    public void addAttendee(String toAdd)
+    public void addAttendee(String attendeeId)
     {
-        getAttendeeIds().add(toAdd);
-//        if (getAttendeeIds().size() == 1)
-//        {
-//            setHostId(toAdd.getId());
-//        }
+        getAttendeeIds().add(attendeeId);
+        if (getAttendeeIds().size() == 1)
+        {
+            setHostId(attendeeId);
+        }
     }
 
-    public void removeAttendee(AttendeeMapper toRemove)
+    public void removeAttendee(String attendeeId)
     {
-        getAttendeeIds().remove(toRemove);
+        getAttendeeIds().remove(attendeeId);
+
+        // if party has no attendee, then delete party
+        if (getAttendeeIds().isEmpty())
+            this.markForDeletion();
+
+        // todo check if host was removed
     }
 
     public String getId()
@@ -114,5 +122,16 @@ public class PartyMapper extends AbstractMapper
     public void setHostId(String hostId)
     {
         this.hostId = hostId;
+    }
+
+    @DynamoDbIgnore
+    public boolean isMarkedForDeletion()
+    {
+        return markForDeletion;
+    }
+
+    private void markForDeletion()
+    {
+        this.markForDeletion = true;
     }
 }

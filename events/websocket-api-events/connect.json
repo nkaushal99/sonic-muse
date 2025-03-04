@@ -1,0 +1,16 @@
+{
+  "requestContext": {
+    "connectionId": "connectionId",
+    "eventType": "CONNECT",
+    "routeKey": "$connect",
+    "apiId": "apiId",
+    "domainName": "domainName",
+    "stage": "stage",
+    "connectedAt": 1678886400000,
+    "identity": {
+      "sourceIp": "sourceIp",
+      "userAgent": "userAgent"
+    }
+  },
+  "isBase64Encoded": false
+}
