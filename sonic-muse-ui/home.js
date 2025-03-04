@@ -12,7 +12,8 @@ const durationDisplay = document.getElementById('duration');
 const partyIdInput = document.getElementById('party-id-input');
 const joinButton = document.getElementById('join-btn');
 
-const baseUrl = 'http://localhost:8080';
+const restApiUrl = 'https://9gk2hizebe.execute-api.ap-south-1.amazonaws.com/prod';
+const websocketUrl = 'wss://kxmi2kpbfb.execute-api.ap-south-1.amazonaws.com/prod';
 
 document.addEventListener('DOMContentLoaded', async function() {
     await syncSongListWithServer();
@@ -22,7 +23,7 @@ async function syncSongListWithServer() {
     let songList;
 
     try {
-        songList = await fetch(baseUrl + '/song')
+        songList = await fetch(restApiUrl + '/song')
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -56,7 +57,7 @@ let webSocket;
 let partyId;
 
 function connectWebSocket() {
-    webSocket = new WebSocket(`ws://localhost:8080/audio-stream`);
+    webSocket = new WebSocket(websocketUrl);
 
     webSocket.onopen = () => {
         console.log('WebSocket connection established');
@@ -79,6 +80,9 @@ function connectWebSocket() {
 
 async function handleMessage(message) {
     switch (message.type) {
+        case 'JOIN_RESPONSE':
+            partyId = message.partyId;
+            break;
         case 'sync_song_list':
             await syncSongListWithServer();
             break;
@@ -163,7 +167,7 @@ async function handleUpload(file) {
 async function uploadSong(file, song) {
     try {
         // 1. Get the pre-signed URL from the server.
-        const urlResponse = await fetch(baseUrl + '/song/upload', {
+        const urlResponse = await fetch(restApiUrl + '/song/upload', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

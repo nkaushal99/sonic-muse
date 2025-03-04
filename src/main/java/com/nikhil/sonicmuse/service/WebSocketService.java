@@ -1,11 +1,13 @@
 package com.nikhil.sonicmuse.service;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2WebSocketEvent;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nikhil.sonicmuse.enumeration.PlayerMessageType;
 import com.nikhil.sonicmuse.mapper.AttendeeMapper;
 import com.nikhil.sonicmuse.mapper.PartyMapper;
+import com.nikhil.sonicmuse.pojo.PartyJoinResponse;
 import com.nikhil.sonicmuse.repository.AttendeeRepository;
 import com.nikhil.sonicmuse.util.cache.InstanceCache;
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.apigatewaymanagementapi.ApiGatewayManagementApiClient;
 import software.amazon.awssdk.services.apigatewaymanagementapi.model.GoneException;
 import software.amazon.awssdk.services.apigatewaymanagementapi.model.PostToConnectionRequest;
+import software.amazon.awssdk.utils.StringUtils;
 
 import java.io.IOException;
 
@@ -74,12 +77,13 @@ public class WebSocketService
         {
             JsonNode json = objectMapper.readTree(payload);
             String type = json.get("type").asText();
-            PlayerMessageType messageType = PlayerMessageType.valueOf(type.toUpperCase());
+            String partyId = json.get("partyId").asText();
 
+            PlayerMessageType messageType = PlayerMessageType.valueOf(type.toUpperCase());
             switch (messageType)
             {
-                case JOIN -> handleJoin(connectionId, json);
-                case PLAY, PAUSE, SEEK, VOLUME, SYNC_SONG_LIST -> broadcastMessage(json);
+                case JOIN -> handleJoin(partyId, connectionId);
+                case PLAY, PAUSE, SEEK, VOLUME, SYNC_SONG_LIST -> broadcastMessage(partyId, payload);
                 default -> LOGGER.warn("Unknown message type: {}", messageType);
             }
         } catch (IOException e)
@@ -89,21 +93,35 @@ public class WebSocketService
         }
     }
 
-    private void handleJoin(String attendeeId, JsonNode json)
+    private void handleJoin(String partyId, String connectionId) throws JsonProcessingException
     {
-        String partyId = json.get("partyId").asText();
+        PartyMapper party;
+        if (StringUtils.isBlank(partyId))
+        {
+            party = partyService.createParty(connectionId);
+        } else
+        {
+            party = partyService.getPartyMapper(partyId);
+            if (party == null)
+                throw new RuntimeException("No party found for id: " + partyId);
 
-        AttendeeMapper attendee = attendeeRepository.findAttendeeById(attendeeId);
-        PartyMapper party = partyService.getPartyCreateIfAbsent(partyId);
-        party.addAttendee(attendeeId);
+            party.addAttendee(connectionId);
+        }
         partyService.saveParty(party);
 
-        LOGGER.info("Attendee {} joined party {}", attendee.getId(), partyId);
+        PartyJoinResponse responseBody = new PartyJoinResponse();
+        responseBody.setType(PlayerMessageType.JOIN_RESPONSE);
+        responseBody.setPartyId(party.getId());
+        responseBody.setHostId(party.getHostId());
+
+        String message = objectMapper.writeValueAsString(responseBody);
+        sendMessage(connectionId, message);
+
+        LOGGER.info("Connection: {} joined party: {}", connectionId, partyId);
     }
 
-    private void broadcastMessage(JsonNode json) throws IOException
+    private void broadcastMessage(String partyId, String message) throws IOException
     {
-        String partyId = json.get("partyId").asText();
         PartyMapper party = partyService.getPartyMapper(partyId);
         if (party != null)
         {
@@ -111,7 +129,7 @@ public class WebSocketService
             {
                 try
                 {
-                    sendMessage(attendeeId, json.asText());
+                    sendMessage(attendeeId, message);
                 } catch (GoneException e)
                 {
                     LOGGER.error("Connection: {} is no longer connected", attendeeId, e);

@@ -12,6 +12,8 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
+import java.net.URI;
+
 public class InstanceCache
 {
 //    private static final String dynamodbUrl = "";
@@ -51,6 +53,7 @@ public class InstanceCache
             new SimpleCache<>(() -> ApiGatewayManagementApiClient.builder()
                     .credentialsProvider(CREDENTIALS_PROVIDER)
                     .region(Region.of(System.getenv(SdkSystemSetting.AWS_REGION.environmentVariable())))
+                    .endpointOverride(URI.create("https://kxmi2kpbfb.execute-api.ap-south-1.amazonaws.com/prod"))
                     .httpClientBuilder(UrlConnectionHttpClient.builder())
                     .build());
 

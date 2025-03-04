@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.core.pagination.sync.SdkIterable;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,42 +35,24 @@ public class PartyService
         return instance;
     }
 
-    public PartyDTO getPartyDetails(String partyId)
-    {
-        PartyMapper partyMapper = getPartyMapper(partyId);
-        if (partyMapper == null)
-            return null;
-        return createPartyDTO(partyMapper);
-    }
-
     public PartyMapper getPartyMapper(String partyId)
     {
         return partyRepository.findPartyById(partyId);
     }
 
-    public PartyMapper getPartyCreateIfAbsent(String partyId)
-    {
-        PartyMapper partyMapper = partyRepository.findPartyById(partyId);
-        if(partyMapper == null)
-        {
-            PartyDTO partyDTO = new PartyDTO();
-            partyDTO.setId(partyId);
-            partyMapper = createParty(partyDTO);
-        }
-        return partyMapper;
-    }
-
-    public PartyMapper createParty(PartyDTO partyDTO)
+    public PartyMapper createParty(String hostId)
     {
         PartyMapper partyMapper = new PartyMapper();
-        if (partyDTO.getId() != null)
-            partyMapper.setId(partyDTO.getId());
-//        partyMapper.setAttendeeIds(partyDTO.getAttendees());
-        partyMapper.setHostId(partyDTO.getHostId());
+        partyMapper.setHostId(hostId);
+
+        Set<String> attendees = new HashSet<>();
+        attendees.add(hostId);
+        partyMapper.setAttendeeIds(attendees);
+
         return partyMapper;
     }
 
-    private PartyDTO createPartyDTO(PartyMapper partyMapper)
+    public PartyDTO createPartyDTO(PartyMapper partyMapper)
     {
         Set<AttendeeDTO> attendeeDTOSet = partyMapper.getAttendeeIds().stream()
             .map(attendeeRepository::findAttendeeById)

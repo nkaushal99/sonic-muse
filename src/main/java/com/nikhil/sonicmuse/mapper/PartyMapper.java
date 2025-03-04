@@ -6,6 +6,7 @@ import com.nikhil.sonicmuse.util.CommonUtil;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbIgnore;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -76,11 +77,17 @@ public class PartyMapper extends AbstractMapper
 
     public void addAttendee(String attendeeId)
     {
-        getAttendeeIds().add(attendeeId);
-        if (getAttendeeIds().size() == 1)
+        Set<String> attendeeIds = getAttendeeIds();
+        if (attendeeIds == null)
+        {
+            attendeeIds = new HashSet<>();
+        }
+        attendeeIds.add(attendeeId);
+        if (attendeeIds.size() == 1)
         {
             setHostId(attendeeId);
         }
+        setAttendeeIds(attendeeIds);
     }
 
     public void removeAttendee(String attendeeId)

@@ -75,30 +75,4 @@ public class AttendeeMapper extends AbstractMapper
     {
         this.partyId = partyId;
     }
-
-    //    public String getId()
-//    {
-//        return getSessionId().getId();
-//    }
-//
-//    public boolean isOnline()
-//    {
-//        return getSessionId().isOpen();
-//    }
-//
-//    public boolean isOffline()
-//    {
-//        return !isOnline();
-//    }
-//
-//    public void sendMessage(WebSocketMessage<?> message)
-//    {
-//        try
-//        {
-//            getSessionId().sendMessage(message);
-//        } catch (IOException e)
-//        {
-//            throw new RuntimeException(e);
-//        }
-//    }
 }
