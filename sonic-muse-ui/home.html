@@ -7,88 +7,103 @@
     <link rel="stylesheet" href="home.css">
 </head>
 <body>
-    <header>
-        <div class="header-left">
-            <img src="sm-transparent.png" alt="Sonic Muse Logo">
-        </div>
-        <nav class="header-right">
-            <a href="#">Request Feature</a>
-            <button class="signin-btn">Sign in</button>
-        </nav>
-    </header>
+<header>
+    <div class="header-left">
+        <img src="sm-transparent.png" alt="Sonic Muse Logo">
+    </div>
+    <nav class="header-right">
+<!--        <div id="g_id_onload"-->
+<!--             data-client_id="YOUR_CLIENT_ID"-->
+<!--             data-context="signin"-->
+<!--             data-ux_mode="popup"-->
+<!--             data-login_uri="YOUR_LOGIN_URI"-->
+<!--             data-auto_prompt="false">-->
+<!--        </div>-->
 
-    <section id="upload-area">
-        <label for="song-file">
-            <span>Play my song</span>
-            <input type="file" id="song-file" accept="audio/*">
-        </label>
+<!--        <div class="g_id_signin"-->
+<!--             data-type="standard"-->
+<!--             data-size="large"-->
+<!--             data-theme="outline"-->
+<!--             data-text="sign_in_with"-->
+<!--             data-shape="rectangular"-->
+<!--             data-logo_alignment="left">-->
+<!--        </div>-->
+    </nav>
+</header>
+
+<section id="upload-area">
+    <label for="song-file">
+        <span>Play my song</span>
+        <input type="file" id="song-file" accept="audio/*">
+    </label>
+</section>
+
+<main>
+    <section id="song-details">
+        <div id="song-list">
+            <!--                <div class="song-list-item">-->
+            <!--                    <div class="track-info">-->
+            <!--                        <span class="track-title">New York Vibe</span>-->
+            <!--                    </div>-->
+            <!--                    <span class="track-duration">first 0:43</span>-->
+            <!--                </div>-->
+        </div>
     </section>
 
-    <main>
-        <section id="song-details">
-            <div id="song-list">
-<!--                <div class="song-list-item">-->
-<!--                    <div class="track-info">-->
-<!--                        <span class="track-title">New York Vibe</span>-->
-<!--                    </div>-->
-<!--                    <span class="track-duration">first 0:43</span>-->
-<!--                </div>-->
-            </div>
-        </section>
-
-        <section id="party-details">
+    <section id="party-details">
             <span class="input">
                 <input id="party-id-input" type="text" placeholder="Party Id">
                 <span id="join-btn">
                     <button>Join</button>
                 </span>
             </span>
-        </section>
-    </main>
-
-    <section id="global-player">
-        <div id="current-track">
-            <!--                    <img src="track-image-current.jpg" alt="Current Track" class="track-image">-->
-            <div class="track-details">
-                <span class="track-title">Title</span>
-                <!--                        <span class="track-genre">Genre</span>-->
-            </div>
-        </div>
-
-        <div id="audio-player">
-            <div id="player-controls">
-                <div id="player-buttons">
-                    <div id="previous-button">
-                        <button class="player-btn">⏮</button>
-                    </div>
-                    <div id="play-button">
-                        <button class="player-btn">▶</button>
-                    </div>
-                    <div id="next-button">
-                        <button class="player-btn">⏭</button>
-                    </div>
-                </div>
-                <div id="volume-controls">
-                    <button id="volume-btn">🔊</button>
-                    <input type="range" min="0" max="100" value="0" id="volume-slider">
-                </div>
-            </div>
-            <div id="progress-bar">
-                <div id="time-passed">--</div>
-                <div id="progress">
-                    <input type="range" min="0" max="100" value="0" id="time-slider">
-                </div>
-                <div id="duration">--</div>
-            </div>
-            <audio id="hidden-audio" controls>
-            </audio>
-        </div>
-
-        <div id="empty-div">
-
-        </div>
     </section>
+</main>
 
-    <script src="home.js"></script>
+<section id="global-player">
+    <div id="current-track">
+        <!--                    <img src="track-image-current.jpg" alt="Current Track" class="track-image">-->
+        <div class="track-details">
+            <span class="track-title">Title</span>
+            <!--                        <span class="track-genre">Genre</span>-->
+        </div>
+    </div>
+
+    <div id="audio-player">
+        <div id="player-controls">
+            <div id="player-buttons">
+                <div id="previous-button">
+                    <button class="player-btn">⏮</button>
+                </div>
+                <div id="play-button">
+                    <button class="player-btn">▶</button>
+                </div>
+                <div id="next-button">
+                    <button class="player-btn">⏭</button>
+                </div>
+            </div>
+            <div id="volume-controls">
+                <button id="volume-btn">🔊</button>
+                <input type="range" min="0" max="100" value="0" id="volume-slider">
+            </div>
+        </div>
+        <div id="progress-bar">
+            <div id="time-passed">--</div>
+            <div id="progress">
+                <input type="range" min="0" max="100" value="0" id="time-slider">
+            </div>
+            <div id="duration">--</div>
+        </div>
+        <audio id="hidden-audio" controls>
+        </audio>
+    </div>
+
+    <div id="empty-div">
+
+    </div>
+</section>
+
+<script type="module" src="home.js"></script>
+<!--<script src="https://accounts.google.com/gsi/client"></script>-->
 </body>
 </html>

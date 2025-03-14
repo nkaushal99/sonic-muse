@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="main-header">
+    <div class="logo">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M16 8v-2a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>
+            <path d="M16 16a2 2 0 0 0 2-2V8"/>
+            <line x1="10" y1="12" x2="10" y2="12.01"/>
+        </svg>
+        <span>Harmony</span>
+    </div>
+    <div class="auth-controls">
+        <button id="signin-btn" class="auth-btn">Sign In</button>
+        <div id="user-menu" class="user-menu hidden">
+            <button class="user-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+            </button>
+            <div class="dropdown-menu">
+                <span class="user-email">user@example.com</span>
+                <button id="logout-btn">Logout</button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="main-content">
+    <div class="playlist">
+        <h3>Playlist</h3>
+        <ul id="playlist-items">
+            <li class="playlist-item active">
+                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=50&h=50&fit=crop"
+                     alt="Midnight Rain">
+                <div class="song-info">
+                    <span class="song-title">Midnight Rain</span>
+                    <span class="song-artist">Dream Echoes</span>
+                </div>
+                <span class="song-duration">3:45</span>
+            </li>
+            <li class="playlist-item">
+                <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=50&h=50&fit=crop"
+                     alt="Neon Lights">
+                <div class="song-info">
+                    <span class="song-title">Neon Lights</span>
+                    <span class="song-artist">Urban Pulse</span>
+                </div>
+                <span class="song-duration">4:20</span>
+            </li>
+            <li class="playlist-item">
+                <img src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=50&h=50&fit=crop"
+                     alt="Sunset Drive">
+                <div class="song-info">
+                    <span class="song-title">Sunset Drive</span>
+                    <span class="song-artist">Coastal Waves</span>
+                </div>
+                <span class="song-duration">3:55</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="right-panel">
+    <div class="room-actions">
+        <a href="#" class="btn">Create Room</a>
+        <a href="#" class="btn secondary">Join Room</a>
+    </div>
+
+    <div class="room-members">
+        <h3>Room Members</h3>
+        <div class="member host">
+            <div class="member-avatar">J</div>
+            <span class="member-name">John Doe</span>
+        </div>
+        <div class="member">
+            <div class="member-avatar">A</div>
+            <span class="member-name">Alice Smith</span>
+        </div>
+        <div class="member">
+            <div class="member-avatar">R</div>
+            <span class="member-name">Robert Johnson</span>
+        </div>
+    </div>
+</div>
+
+<footer class="music-player">
+    <div class="now-playing">
+        <img id="cover-art" src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop"
+             alt="Album cover">
+        <div class="track-info">
+            <h2 id="track-title">Midnight Rain</h2>
+            <p id="track-artist">Dream Echoes</p>
+        </div>
+    </div>
+
+    <div class="player-controls">
+        <div class="controls">
+            <button id="shuffle" class="control-btn" title="Shuffle">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>
+                </svg>
+            </button>
+            <button id="prev" class="control-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m19 20-9-8 9-8v16Z M5 19V5"/>
+                </svg>
+            </button>
+            <button id="play" class="control-btn play-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+            </button>
+            <button id="next" class="control-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m5 4 9 8-9 8V4Z M19 5v14"/>
+                </svg>
+            </button>
+            <button id="loop" class="control-btn" title="Loop">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 2l4 4-4 4"/>
+                    <path d="M3 11v-1a4 4 0 0 1 4-4h14"/>
+                    <path d="M7 22l-4-4 4-4"/>
+                    <path d="M21 13v1a4 4 0 0 1-4 4H3"/>
+                </svg>
+            </button>
+        </div>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        <div class="time-info">
+            <span id="current-time">0:00</span>
+            <span id="duration">3:45</span>
+        </div>
+    </div>
+
+    <div class="volume-controls">
+        <button id="mute" class="control-btn" title="Mute">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+            </svg>
+        </button>
+        <input type="range" id="volume" min="0" max="100" value="100" class="volume-slider">
+    </div>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>
