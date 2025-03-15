@@ -45,22 +45,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let shuffledIndices = [...Array(songs.length).keys()];
 
-    function togglePlay() {
-        isPlaying = !isPlaying;
-        updatePlayButton();
-
-        if (isPlaying) {
-            startProgressSimulation();
-        } else {
-            stopProgressSimulation();
-        }
-    }
-
-    function updatePlayButton() {
-        playBtn.innerHTML = isPlaying
-            ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>'
-            : '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
-    }
+    // function togglePlay() {
+    //     isPlaying = !isPlaying;
+    //     updatePlayButton();
+    //
+    //     if (isPlaying) {
+    //         startProgressSimulation();
+    //     } else {
+    //         stopProgressSimulation();
+    //     }
+    // }
+    //
+    // function updatePlayButton() {
+    //     playBtn.innerHTML = isPlaying
+    //         ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>'
+    //         : '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+    // }
 
     function toggleShuffle() {
         isShuffled = !isShuffled;
@@ -93,34 +93,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function toggleMute() {
-        isMuted = !isMuted;
-        muteBtn.classList.toggle('active', isMuted);
-
-        if (isMuted) {
-            previousVolume = volumeSlider.value;
-            volumeSlider.value = 0;
-        } else {
-            volumeSlider.value = previousVolume;
-        }
-
-        updateVolumeIcon();
-    }
-
-    function updateVolumeIcon() {
-        const volume = volumeSlider.value;
-        let icon;
-
-        if (volume == 0 || isMuted) {
-            icon = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>';
-        } else if (volume < 50) {
-            icon = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>';
-        } else {
-            icon = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
-        }
-
-        muteBtn.innerHTML = icon;
-    }
+    // function toggleMute() {
+    //     isMuted = !isMuted;
+    //     muteBtn.classList.toggle('active', isMuted);
+    //
+    //     if (isMuted) {
+    //         previousVolume = volumeSlider.value;
+    //         volumeSlider.value = 0;
+    //     } else {
+    //         volumeSlider.value = previousVolume;
+    //     }
+    //
+    //     updateVolumeIcon();
+    // }
+    //
+    // function updateVolumeIcon() {
+    //     const volume = volumeSlider.value;
+    //     let icon;
+    //
+    //     if (volume == 0 || isMuted) {
+    //         icon = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>';
+    //     } else if (volume < 50) {
+    //         icon = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>';
+    //     } else {
+    //         icon = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
+    //     }
+    //
+    //     muteBtn.innerHTML = icon;
+    // }
 
     let progressInterval;
     let currentProgress = 0;

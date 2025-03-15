@@ -11,7 +11,7 @@ import {WebSocketWrapper} from './websocket.js';
 
 let partyId;
 let webSocket;
-let player;
+let player1;
 
 async function handleMessage(message) {
     switch (message.type) {
@@ -19,23 +19,25 @@ async function handleMessage(message) {
             partyId = message.partyId;
             break;
         case 'sync_song_list':
-            await player.syncSongListWithParty();
+            await player1.syncSongListWithParty();
             break;
         case 'play':
             audio.src = message.url;
             audio.onloadedmetadata = () => {
                 progress.value = message.seek;
-                progress.style.setProperty('--slider-value', `${message.seek}%`);
                 audio.currentTime = (progress.value / 100) * audio.duration;
+                audio.play();
+                // playBtn.textContent = '⏸';
                 togglePlay();
             };
             break;
         case 'pause':
+            audio.pause();
+            // playBtn.textContent = '▶';
             togglePlay();
             break;
         case 'seek':
             progress.value = message.seek;
-            progress.style.setProperty('--slider-value', `${message.seek}%`);
             audio.currentTime = (progress.value / 100) * audio.duration;
             break;
         default:
@@ -43,69 +45,55 @@ async function handleMessage(message) {
     }
 }
 
-export function initializePlayer(websocketUrl) {
-    if (!player) {
-        player = {
-            join: (partyIdValue) => {
-                partyId = partyIdValue ? partyIdValue : '';
-                const joinMsg = {
-                    type: 'join',
-                    partyId: partyId
-                };
-                webSocket = !websocketUrl ? null : new WebSocketWrapper(websocketUrl, handleMessage, joinMsg);
-            },
-            play: (songUrl) => {
-                audio.src = songUrl;
-                togglePlay(true);
-            },
-            togglePlay: (reset = false) => {
+export function initializePlayer() {
+    if (!player1) {
+        player1 = {
+            // join: (partyIdInput) => {
+            //     partyId = partyIdInput;
+            //     const joinMsg = {
+            //         type: 'join',
+            //         partyId: partyId
+            //     };
+            //     webSocket = !websocketUrl ? null : new WebSocketWrapper(websocketUrl, handleMessage, joinMsg);
+            // },
+            togglePlay: () => {
                 if (!audio.currentSrc) {
                     alert("Pick a song first!");
                     return;
                 }
 
-                if (webSocket) {
-                    const message = {
-                        type: audio.paused ? 'play' : 'pause',
-                        partyId: partyId,
-                        url: audio.currentSrc,
-                        seek: reset ? 0 : progress.value,
-                    };
-                    webSocket.send(message);
-                }
-            },
-            updatePlayButton: () => {
-                updatePlayButton();
+                const message = {
+                    type: audio.paused ? 'play' : 'pause',
+                    partyId: partyId,
+                    url: audio.currentSrc,
+                    seek: progress.value,
+                };
+                webSocket.send(message);
             },
             seek: (seekValue) => {
-                if (webSocket) {
-                    const message = {
-                        type: 'seek',
-                        partyId: partyId,
-                        seek: seekValue,
-                    };
-                    webSocket.send(message);
-                }
+                const message = {
+                    type: 'seek',
+                    partyId: partyId,
+                    seek: seekValue,
+                };
+                webSocket.send(message);
             },
             setVolume: (volume) => {
                 audio.volume = volume / 100;
-                volumeSlider.style.setProperty('--slider-value', `${volume}%`);
             },
             toggleMute: () => {
                 toggleMute();
             },
             syncSongListWithParty: () => {
-                // if (webSocket) {
-                //     const message = {
-                //         type: 'sync_song_list',
-                //         partyId: partyId
-                //     };
-                //     webSocket.send(message);
-                // }
+                const message = {
+                    type: 'sync_song_list',
+                    partyId: partyId
+                };
+                webSocket.send(message);
             }
         };
     }
-    return player;
+    return player1;
 }
 
 function togglePlay() {
@@ -119,19 +107,19 @@ function togglePlay() {
 }
 
 function updatePlayButton() {
-    playBtn.innerHTML = audio.paused
+    playBtn.innerHTML = !audio.paused
         ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>'
         : '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
 }
 
 function toggleMute() {
     function unMute() {
-        audio.muted = false;
-        volumeSlider.value = audio.volume * 100;
+        audio.unmute();
+        volumeSlider.value = audio.volume;
     }
 
     function mute() {
-        audio.muted = true;
+        audio.mute();
         volumeSlider.value = 0;
     }
 
@@ -156,4 +144,59 @@ function updateVolumeIcon() {
     }
 
     muteBtn.innerHTML = icon;
+}
+
+// Event Listeners
+playBtn.addEventListener('click', togglePlay);
+nextBtn.addEventListener('click', nextSong);
+prevBtn.addEventListener('click', prevSong);
+shuffleBtn.addEventListener('click', toggleShuffle);
+loopBtn.addEventListener('click', toggleLoop);
+muteBtn.addEventListener('click', toggleMute);
+
+volumeSlider.addEventListener('input', () => {
+    isMuted = volumeSlider.value == 0;
+    muteBtn.classList.toggle('active', isMuted);
+    updateVolumeIcon();
+});
+
+playlistItems.forEach((item, index) => {
+    item.addEventListener('click', () => {
+        currentSongIndex = index;
+        updateSong(index);
+        if (!isPlaying) {
+            togglePlay();
+        }
+    });
+});
+
+signinBtn.addEventListener('click', toggleAuth);
+logoutBtn.addEventListener('click', toggleAuth);
+
+// Initialize first song and volume
+updateSong(currentSongIndex);
+updateVolumeIcon();
+
+audio.addEventListener('timeupdate', () => {
+    progress.value = (audio.currentTime / audio.duration) * 100;
+    currentTimeEl.textContent = formatTime(audio.currentTime);
+});
+
+audio.addEventListener('ended', () => {
+    playBtn.textContent = '▶';
+    progress.value = 0;
+    currentTimeEl.textContent = '0:00';
+});
+
+audio.addEventListener('loadedmetadata', () => {
+    durationEl.textContent = formatTime(audio.duration);
+});
+
+function formatTime(time) {
+    if (isNaN(time)) {
+        return '0:00';
+    }
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `<span class="math-inline">${minutes}:</span>{seconds < 10 ? '0' : ''}${seconds}`;
 }

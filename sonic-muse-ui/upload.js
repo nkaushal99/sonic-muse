@@ -1,5 +1,5 @@
 import {restApiUrl} from './constants.js';
-import {initializePlayer} from './player.js';
+import {initializePlayer} from './player-1.js';
 
 export async function handleUpload(file) {
     if (file) {
