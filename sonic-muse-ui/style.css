@@ -476,6 +476,21 @@ body {
     margin-top: 2rem;
 }
 
+.loading-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.loading-error {
+    color: red;
+    text-align: center;
+    padding: 10px;
+}
+
 .playlist h3 {
     margin-bottom: 1rem;
     font-size: 1.2rem;

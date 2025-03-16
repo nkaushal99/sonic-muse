@@ -1,24 +1,45 @@
 import {
     joinButton,
-    fileUpload,
-    volumeSlider,
-    muteBtn,
     restApiUrl,
-    playlist,
-    websocketUrl, playBtn, progress, createButton,
-    audio, durationEl, currentTimeEl, playlistItems
+    websocketUrl,
+    createButton,
+    playlistItems,
+    mainContent
 } from './constants.js';
 
 import {initializePlayer} from "./player.js";
 import {PlaylistManager} from "./playlistManager.js";
 
 let player;
+let currentSong;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const playlistManager = new PlaylistManager(restApiUrl);
-    await playlistManager.syncPlaylistWithServer();
+    const loadingContainer = mainContent;
+    const originalContent = loadingContainer.innerHTML;
 
-    player = initializePlayer(websocketUrl);
+    // Show loading screen
+    loadingContainer.innerHTML = '<div class="loading-screen">Loading...</div>';
+
+    try {
+        const playlistManager = new PlaylistManager(restApiUrl);
+        // await playlistManager.syncPlaylistWithServer();
+
+        // Simulate asynchronous operation with setTimeout
+        await new Promise(resolve => {
+            setTimeout(async () => {
+                // await playlistManager.syncPlaylistWithServer();
+                resolve();
+            }, 6000); // Simulate a 6-second delay
+        });
+
+        player = initializePlayer(websocketUrl);
+
+        // Restore original content (remove loading screen)
+        loadingContainer.innerHTML = originalContent;
+    } catch (error) {
+        console.error('Error during initialization:', error);
+        loadingContainer.innerHTML = '<div class="loading-error">Error loading. Please try again.</div>';
+    }
 
     createButton.addEventListener('click', () => {
         player.join();
@@ -27,52 +48,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     joinButton.addEventListener('click', () => {
         // showJoinRoomModal();
     });
-
-    volumeSlider.addEventListener('input', () => {
-        player.setVolume(volumeSlider.value);
-    });
-
-    muteBtn.addEventListener('click', () => {
-        player.toggleMute();
-    });
-
-    playBtn.addEventListener('click', () => {
-        player.togglePlay();
-    });
-
-    progress.addEventListener('input', () => {
-        player.seek(progress.value);
-    });
-
-    audio.addEventListener('timeupdate', () => {
-        const audioProgressed = (audio.currentTime / audio.duration) * 100;
-        progress.value = audioProgressed;
-        progress.style.setProperty('--slider-value', `${audioProgressed}%`);
-        currentTimeEl.textContent = formatTime(audio.currentTime);
-    });
-
-    audio.addEventListener('ended', () => {
-        player.updatePlayButton();
-        progress.style.setProperty('--slider-value', '0%');
-        currentTimeEl.textContent = '0:00';
-    });
-
-    audio.addEventListener('loadedmetadata', () => {
-        currentTimeEl.textContent = formatTime(audio.currentTime);
-        durationEl.textContent = formatTime(audio.duration);
-    });
-
-    function formatTime(time) {
-        if (isNaN(time)) {
-            return '0:00';
-        }
-        const minutes = Math.floor(time / 60);
-        const seconds = Math.floor(time % 60);
-        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    }
 });
 
 document.addEventListener('selectSong', async (event) => {
+    // Update the global var
+    currentSong = event.detail;
+
     // Update active playlist item
     const songId = event.detail.id;
     playlistItems.forEach(item => {
@@ -81,12 +62,7 @@ document.addEventListener('selectSong', async (event) => {
 
     // update player
     const songUrl = event.detail.url;
-    player.play(songUrl);
-
-    // Reset progress
-    progress.value = 0;
-    progress.style.setProperty('--slider-value', '0%');
-    currentTimeEl.textContent = '0:00';
+    player.play(songUrl, 0);
 })
 
 // function showJoinRoomModal() {

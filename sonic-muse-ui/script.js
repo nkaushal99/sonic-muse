@@ -73,26 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function toggleLoop() {
-        switch (loopMode) {
-            case 'none':
-                loopMode = 'one';
-                loopBtn.classList.add('active');
-                loopBtn.title = 'Loop One';
-                break;
-            case 'one':
-                loopMode = 'all';
-                loopBtn.classList.add('active');
-                loopBtn.title = 'Loop All';
-                break;
-            case 'all':
-                loopMode = 'none';
-                loopBtn.classList.remove('active');
-                loopBtn.title = 'Loop';
-                break;
-        }
-    }
-
     // function toggleMute() {
     //     isMuted = !isMuted;
     //     muteBtn.classList.toggle('active', isMuted);
@@ -180,36 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (isPlaying) {
             startProgressSimulation();
-        }
-    }
-
-    function nextSong() {
-        if (loopMode === 'one') {
-            // Stay on current song
-            currentProgress = 0;
-            updateSong(currentSongIndex);
-            return;
-        }
-
-        currentSongIndex = (currentSongIndex + 1) % songs.length;
-        if (currentSongIndex === 0 && loopMode !== 'all') {
-            // Stop at end of playlist if not looping
-            isPlaying = false;
-            updatePlayButton();
-            stopProgressSimulation();
-        }
-        updateSong(currentSongIndex);
-    }
-
-    function prevSong() {
-        if (currentProgress > 5) {
-            // If more than 5% into song, restart current song
-            currentProgress = 0;
-            updateSong(currentSongIndex);
-        } else {
-            // Go to previous song
-            currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-            updateSong(currentSongIndex);
         }
     }
 

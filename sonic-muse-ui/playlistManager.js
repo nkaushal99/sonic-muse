@@ -70,10 +70,7 @@ export class PlaylistManager {
             this.activeSong = songItem;
             this.activeSong.classList.add('active');
             const playSongEvent = new CustomEvent('selectSong', {
-                detail: {
-                    id: song.id,
-                    url: song.url
-                }
+                detail: song
             });
 
             document.dispatchEvent(playSongEvent);
