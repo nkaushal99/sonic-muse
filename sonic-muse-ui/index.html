@@ -32,7 +32,7 @@
     </div>
 </header>
 
-<div class="main-content">
+<main class="main-content">
     <div class="playlist">
         <h3>Playlist</h3>
         <ul id="playlist-items">
@@ -317,9 +317,9 @@
             </li>
         </ul>
     </div>
-</div>
+</main>
 
-<div class="right-panel">
+<aside class="right-panel">
     <div class="room-actions">
         <button class="btn primary" id="create-btn">Create Room</button>
         <button class="btn secondary" id="join-btn">Join Room</button>
@@ -500,7 +500,7 @@
             <span class="member-name">Robert Johnson</span>
         </div>
     </div>
-</div>
+</aside>
 
 <footer class="music-player">
     <div class="now-playing">
@@ -567,6 +567,18 @@
     <audio id="hidden-audio" controls>
     </audio>
 </footer>
+
+<div class="modal-overlay" id="join-room-modal">
+    <div class="modal">
+        <h2>Join Room</h2>
+        <input type="text" class="modal-input" id="room-id-input" placeholder="Room ID">
+        <div class="modal-actions">
+            <button class="modal-btn secondary" id="cancel-join">Cancel</button>
+            <button class="modal-btn primary" id="confirm-join">Join</button>
+        </div>
+    </div>
+</div>
+
 <script src="index.js" type="module"></script>
 </body>
 </html>

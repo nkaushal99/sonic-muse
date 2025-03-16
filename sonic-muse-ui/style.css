@@ -166,8 +166,8 @@ body {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .main-content {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
 }
 
 .right-panel {
@@ -188,8 +188,8 @@ body {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .right-panel {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
 }
 
 .room-actions {
@@ -321,7 +321,7 @@ body {
     height: 4px;
     border-radius: 2px;
     background: linear-gradient(to right, var(--primary-clr) 0%, var(--primary-clr) var(--slider-value),
-                                rgba(255, 255, 255, 0.1) var(--slider-value), rgba(255, 255, 255, 0.1) 100%);
+    rgba(255, 255, 255, 0.1) var(--slider-value), rgba(255, 255, 255, 0.1) 100%);
     outline: none;
 }
 
@@ -379,6 +379,7 @@ body {
     font-size: 0.8rem;
     width: 10%;
 }
+
 /*.time-info {*/
 /*    display: flex;*/
 /*    justify-content: space-between;*/
@@ -554,123 +555,142 @@ body {
     display: none;
 }
 
-/*.modal-overlay {*/
-/*    position: fixed;*/
-/*    top: 0;*/
-/*    left: 0;*/
-/*    right: 0;*/
-/*    bottom: 0;*/
-/*    background: rgba(0, 0, 0, 0.85);*/
-/*    display: flex;*/
-/*    align-items: center;*/
-/*    justify-content: center;*/
-/*    z-index: 2000;*/
-/*    backdrop-filter: blur(8px);*/
-/*    opacity: 0;*/
-/*    transition: opacity 0.3s ease;*/
-/*}*/
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
 
-/*.modal-overlay.visible {*/
-/*    opacity: 1;*/
-/*}*/
+.modal-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
 
-/*.modal {*/
-/*    background: #2d2d2d;*/
-/*    border-radius: 12px;*/
-/*    padding: 2rem;*/
-/*    width: 90%;*/
-/*    max-width: 400px;*/
-/*    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);*/
-/*    border: 1px solid rgba(255, 255, 255, 0.1);*/
-/*    transform: translateY(20px);*/
-/*    opacity: 0;*/
-/*    transition: all 0.3s ease;*/
-/*}*/
+.modal {
+    background: #2d2d2d;
+    border-radius: 12px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
 
-/*.modal.visible {*/
-/*    transform: translateY(0);*/
-/*    opacity: 1;*/
-/*}*/
+.modal-overlay.visible .modal {
+    transform: translateY(0);
+    opacity: 1;
+}
 
-/*.modal h2 {*/
-/*    margin-bottom: 1.5rem;*/
-/*    font-size: 1.5rem;*/
-/*    color: #ffffff;*/
-/*}*/
+.modal h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    color: #ffffff;
+}
 
-/*.modal-input {*/
-/*    width: 100%;*/
-/*    padding: 0.75rem 1rem;*/
-/*    background: rgba(255, 255, 255, 0.1);*/
-/*    border: 1px solid rgba(255, 255, 255, 0.2);*/
-/*    border-radius: 8px;*/
-/*    color: #ffffff;*/
-/*    font-size: 1rem;*/
-/*    margin-bottom: 1.5rem;*/
-/*    transition: all 0.2s;*/
-/*}*/
+.modal-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.2s;
+}
 
-/*.modal-input:focus {*/
-/*    outline: none;*/
-/*    border-color: #1db954;*/
-/*    background: rgba(255, 255, 255, 0.15);*/
-/*}*/
+.modal-input:focus {
+    outline: none;
+    border-color: var(--primary-clr);
+    background: rgba(255, 255, 255, 0.15);
+}
 
-/*.modal-input::placeholder {*/
-/*    color: rgba(255, 255, 255, 0.5);*/
-/*}*/
+.modal-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
 
-/*.modal-input.error {*/
-/*    border-color: #ff5555;*/
-/*    animation: shake 0.4s ease-in-out;*/
-/*}*/
+.modal-input.error {
+    border-color: #ff5555;
+    animation: shake 0.4s ease-in-out;
+}
 
-/*@keyframes shake {*/
-/*    0%, 100% { transform: translateX(0); }*/
-/*    25% { transform: translateX(-5px); }*/
-/*    75% { transform: translateX(5px); }*/
-/*}*/
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
 
-/*.modal-actions {*/
-/*    display: flex;*/
-/*    gap: 1rem;*/
-/*}*/
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+}
 
-/*.modal-btn {*/
-/*    flex: 1;*/
-/*    padding: 0.75rem;*/
-/*    border: none;*/
-/*    border-radius: 8px;*/
-/*    font-size: 1rem;*/
-/*    cursor: pointer;*/
-/*    transition: all 0.2s;*/
-/*}*/
+.modal-btn {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
 
-/*.modal-btn.primary {*/
-/*    background: #1db954;*/
-/*    color: white;*/
-/*}*/
+.modal-btn.primary:hover {
+    /*background: #1ed760;*/
+    transform: translateY(-2px);
+}
 
-/*.modal-btn.primary:hover {*/
-/*    background: #1ed760;*/
-/*    transform: translateY(-2px);*/
-/*}*/
+.modal-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
 
-/*.modal-btn.secondary {*/
-/*    background: rgba(255, 255, 255, 0.1);*/
-/*    color: white;*/
-/*}*/
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    animation: slideIn 0.3s ease-out;
+}
 
-/*.modal-btn.secondary:hover {*/
-/*    background: rgba(255, 255, 255, 0.2);*/
-/*}*/
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
 
-/*@keyframes slideIn {*/
-/*    from { transform: translateX(100%); opacity: 0; }*/
-/*    to { transform: translateX(0); opacity: 1; }*/
-/*}*/
-
-/*@keyframes slideOut {*/
-/*    from { transform: translateX(0); opacity: 1; }*/
-/*    to { transform: translateX(100%); opacity: 0; }*/
-/*}*/
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}

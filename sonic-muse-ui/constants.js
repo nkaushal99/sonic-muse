@@ -17,7 +17,12 @@ const playlistItems = document.querySelectorAll('.playlist-item');
 // party
 const createButton = document.getElementById('create-btn');
 const joinButton = document.getElementById('join-btn');
-const fileUpload = document.getElementById('song-file');
+
+// join modal
+const joinModal = document.getElementById('join-room-modal');
+const joinCancelBtn = document.getElementById('cancel-join');
+const joinConfirmBtn = document.getElementById('confirm-join');
+const joinInput = document.getElementById('room-id-input');
 
 // player
 const audio = document.getElementById('hidden-audio');
@@ -45,7 +50,10 @@ export {
     playlistItems,
     createButton,
     joinButton,
-    fileUpload,
+    joinModal,
+    joinCancelBtn,
+    joinConfirmBtn,
+    joinInput,
     audio,
     playBtn,
     prevBtn,
