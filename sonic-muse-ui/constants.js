@@ -17,6 +17,10 @@ const playlistItems = document.querySelectorAll('.playlist-item');
 // party
 const createButton = document.getElementById('create-btn');
 const joinButton = document.getElementById('join-btn');
+const leaveButton = document.getElementById('leave-room');
+const roomInfo = document.querySelector('.room-info');
+const currentRoomIdEl = document.getElementById('current-room-id');
+const membersList = document.querySelector('.members-list');
 
 // join modal
 const joinModal = document.getElementById('join-room-modal');
@@ -50,6 +54,10 @@ export {
     playlistItems,
     createButton,
     joinButton,
+    leaveButton,
+    roomInfo,
+    currentRoomIdEl,
+    membersList,
     joinModal,
     joinCancelBtn,
     joinConfirmBtn,

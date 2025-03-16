@@ -9,22 +9,14 @@ import {
 
 import {initializePlayer} from "./player.js";
 import {PlaylistManager} from "./playlistManager.js";
-import {showJoinRoomModal, warmupJoinModal} from "./joinModal.js";
+import {RoomManager} from "./roomManager.js";
 
 let player;
 let currentSong;
 
 document.addEventListener('DOMContentLoaded', async () => {
 
-    createButton.addEventListener('click', () => {
-        player.join();
-    });
-
-    warmupJoinModal();
-
-    joinButton.addEventListener('click', () => {
-        showJoinRoomModal();
-    });
+    const roomManager = new RoomManager();
 
     const loadingContainer = mainContent;
     const originalContent = loadingContainer.innerHTML;
