@@ -1,13 +1,14 @@
 package com.nikhil.sonicmuse.enumeration;
 
-public enum PlayerMessageType
+public enum WebSocketMessageType
 {
+    CREATE,
     JOIN,
-    JOIN_RESPONSE,
     LEAVE,
+    MEMBER_JOIN,
+    MEMBER_LEAVE,
     PLAY,
     PAUSE,
     SEEK,
-    VOLUME,
     SYNC_SONG_LIST
 }

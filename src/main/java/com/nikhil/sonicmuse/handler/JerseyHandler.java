@@ -5,6 +5,7 @@ import com.amazonaws.serverless.proxy.model.AwsProxyRequest;
 import com.amazonaws.serverless.proxy.model.AwsProxyResponse;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
+import com.nikhil.sonicmuse.resource.PartyResource;
 import com.nikhil.sonicmuse.resource.SongResource;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerResponseContext;
@@ -19,6 +20,7 @@ public class JerseyHandler implements RequestStreamHandler
 {
     private static final ResourceConfig jerseyApplication = new ResourceConfig()
             .register(CorsFilter.class)
+            .register(PartyResource.class)
             .register(SongResource.class);
 
     private static final JerseyLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler =

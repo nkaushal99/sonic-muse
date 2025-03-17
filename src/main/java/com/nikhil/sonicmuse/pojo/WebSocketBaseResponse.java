@@ -1,19 +1,19 @@
 package com.nikhil.sonicmuse.pojo;
 
-import com.nikhil.sonicmuse.enumeration.PlayerMessageType;
+import com.nikhil.sonicmuse.enumeration.WebSocketMessageType;
 
-public class PartyJoinResponse
+public class WebSocketBaseResponse
 {
-    PlayerMessageType type;
+    WebSocketMessageType type;
     String partyId;
     String hostId;
 
-    public PlayerMessageType getType()
+    public WebSocketMessageType getType()
     {
         return type;
     }
 
-    public void setType(PlayerMessageType type)
+    public void setType(WebSocketMessageType type)
     {
         this.type = type;
     }
