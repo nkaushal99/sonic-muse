@@ -10,7 +10,7 @@ import {
     currentTimeEl,
     durationEl,
     nextBtn,
-    prevBtn
+    prevBtn, musicPlayer
 } from './constants.js';
 import {WebSocketWrapper} from './websocket.js';
 import {formatTime} from "./util.js";
@@ -63,28 +63,10 @@ class Player {
         nextBtn.addEventListener('click', () => this.next());
 
         prevBtn.addEventListener('click', () => this.prev());
-    }
 
-    async handleMessage(message) {
-        switch (message.type) {
-            case 'JOIN_RESPONSE':
-                this.partyId = message.partyId;
-                break;
-            case 'sync_song_list':
-                await this.syncSongListWithParty();
-                break;
-            case 'play':
-                this.play(message.url, message.seek, true);
-                break;
-            case 'pause':
-                this.pause(true);
-                break;
-            case 'seek':
-                this.seek(message.seek, true);
-                break;
-            default:
-                console.log('Unknown message:', message);
-        }
+        musicPlayer.addEventListener('play', (message) => {
+            this.play(message.url, message.seek, true);
+        })
     }
 
     join(partyIdValue) {

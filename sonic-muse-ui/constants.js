@@ -12,9 +12,11 @@ const mainContent = document.querySelector('.main-content')
 
 // playlist
 const playlist = document.querySelector('.playlist');
-const playlistItems = document.querySelectorAll('.playlist-item');
+const playlistItems = document.getElementById('playlist-items');
+const allPlaylistItems = document.querySelectorAll('.playlist-item');
 
 // party
+const roomPanel = document.querySelector('.room-panel');
 const createButton = document.getElementById('create-btn');
 const joinButton = document.getElementById('join-btn');
 const leaveButton = document.getElementById('leave-room');
@@ -29,6 +31,7 @@ const joinConfirmBtn = document.getElementById('confirm-join');
 const joinInput = document.getElementById('room-id-input');
 
 // player
+const musicPlayer = document.querySelector('.music-player');
 const audio = document.getElementById('hidden-audio');
 const playBtn = document.getElementById('play');
 const prevBtn = document.getElementById('prev');
@@ -43,6 +46,7 @@ const durationEl = document.querySelector('.duration');
 const pauseBtnSVG = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>';
 const playBtnSVG = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
 
+
 export {
     restApiUrl,
     websocketUrl,
@@ -52,6 +56,8 @@ export {
     mainContent,
     playlist,
     playlistItems,
+    allPlaylistItems,
+    roomPanel,
     createButton,
     joinButton,
     leaveButton,
@@ -62,6 +68,7 @@ export {
     joinCancelBtn,
     joinConfirmBtn,
     joinInput,
+    musicPlayer,
     audio,
     playBtn,
     prevBtn,

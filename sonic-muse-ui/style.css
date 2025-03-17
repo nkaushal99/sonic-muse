@@ -175,7 +175,7 @@ h3 {
     scrollbar-width: none; /* Firefox */
 }
 
-.right-panel {
+.room-panel {
     background: var(--container);
     backdrop-filter: blur(10px);
     padding: 2rem;
@@ -187,12 +187,12 @@ h3 {
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
-.right-panel::-webkit-scrollbar {
+.room-panel::-webkit-scrollbar {
     display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
-.right-panel {
+.room-panel {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
 }

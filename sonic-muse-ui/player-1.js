@@ -160,7 +160,7 @@ volumeSlider.addEventListener('input', () => {
     updateVolumeIcon();
 });
 
-playlistItems.forEach((item, index) => {
+allPlaylistItems.forEach((item, index) => {
     item.addEventListener('click', () => {
         currentSongIndex = index;
         updateSong(index);

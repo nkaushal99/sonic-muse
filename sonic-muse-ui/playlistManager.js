@@ -1,15 +1,12 @@
-import {playlist} from "./constants.js";
+import {playlist, playlistItems, restApiUrl} from "./constants.js";
 
 export class PlaylistManager {
-    constructor(restApiBaseUrl) {
-        this.restApiBaseUrl = restApiBaseUrl;
-    }
 
     async syncPlaylistWithServer() {
         let songs;
 
         try {
-            songs = await fetch(this.restApiBaseUrl + '/song')
+            songs = await fetch(restApiUrl + '/song')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
@@ -29,6 +26,7 @@ export class PlaylistManager {
                 this.addSongToList(song);
             });
         }
+        return playlistItems;
     }
 
     addSongToList(song) {
@@ -76,6 +74,6 @@ export class PlaylistManager {
             document.dispatchEvent(playSongEvent);
         });
 
-        playlist.appendChild(songItem);
+        playlistItems.appendChild(songItem);
     }
 }

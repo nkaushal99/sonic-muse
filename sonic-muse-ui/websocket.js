@@ -2,16 +2,16 @@ export class WebSocketWrapper {
     webSocket;
     messageHandler;
 
-    constructor(websocketUrl, messageHandler, joinMsg) {
+    constructor(websocketUrl, messageHandler, connectionMsg) {
         this.webSocket = new WebSocket(websocketUrl);
         this.messageHandler = messageHandler;
-        this.connect(websocketUrl, messageHandler, joinMsg);
+        this.connect(websocketUrl, messageHandler, connectionMsg);
     }
 
-    connect(websocketUrl, messageHandler, joinMsg) {
+    connect(websocketUrl, messageHandler, connectionMsg) {
         this.webSocket.onopen = () => {
             console.log('WebSocket connection established');
-            this.send(joinMsg);
+            this.send(connectionMsg);
         };
 
         this.webSocket.onmessage = async (event) => {
@@ -30,6 +30,7 @@ export class WebSocketWrapper {
 
     async handleMessage(message) {
         if (this.messageHandler) {
+            // const newMessage = {...message, source: WBS_TO_MESS?.[message.type?.toUpperCase()] };
             await this.messageHandler(message); // Callback
         } else {
             console.log('Received message (no handler):', message);
@@ -46,5 +47,6 @@ export class WebSocketWrapper {
 
     close() {
         this.webSocket.close();
+        this.webSocket = null;
     }
 }
