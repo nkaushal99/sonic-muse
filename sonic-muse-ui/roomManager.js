@@ -13,7 +13,7 @@ import {
 } from "./constants.js";
 import {getPartyId, setPartyId, initializeWebSocket, getWebSocket, getUserName} from "./globals.js";
 
-export class RoomManager {
+class RoomManager {
     constructor() {
         this.setupEventListeners();
     }
@@ -217,4 +217,8 @@ function buildLeaveRoomMsg() {
     return {
         type: 'leave'
     };
+}
+
+export function initializeRoomManager() {
+    return new RoomManager();
 }

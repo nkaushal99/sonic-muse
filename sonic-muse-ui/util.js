@@ -62,9 +62,12 @@ function sendEvent(body) {
     console.log('Triggered event:', event);
 }
 
-function getLoadingScreen()
-{
-    return '<div class="loading-screen">Loading...</div>'
+function showLoadingScreenOn(container) {
+    container.innerHTML = '<div class="loading-screen">Loading...</div>';
 }
 
-export {formatTime, handleMessage, getLoadingScreen};
+function showErrorScreenOn(container) {
+    container.innerHTML = '<div class="loading-error">Error loading. Please try again.</div>';
+}
+
+export {formatTime, handleMessage, sendEvent, showLoadingScreenOn, showErrorScreenOn};

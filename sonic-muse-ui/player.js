@@ -12,21 +12,22 @@ import {
     nextBtn,
     prevBtn, musicPlayer
 } from './constants.js';
-import {WebSocketWrapper} from './websocket.js';
 import {formatTime} from "./util.js";
+import {getPartyId, getWebSocket} from "./globals.js";
 
 class Player {
-    constructor(websocketUrl) {
-        this.partyId = null;
-        this.webSocket = null;
+    constructor() {
         this.loopMode = 'none';
         this.currentSongUrl = null;
         this.currentSeekValue = 0;
-        this.websocketUrl = websocketUrl;
-        this.initializeEventListeners();
+        this.setupEventListeners();
     }
 
-    initializeEventListeners() {
+    setupEventListeners() {
+        musicPlayer.addEventListener('change', event => {
+            this.play(event.url, 0);
+        })
+
         audio.addEventListener('ended', () => this.handleAudioEnded());
 
         audio.addEventListener('timeupdate', () => {
@@ -69,14 +70,14 @@ class Player {
         })
     }
 
-    join(partyIdValue) {
-        this.partyId = partyIdValue ? partyIdValue : '';
-        const joinMsg = {
-            type: 'join',
-            partyId: this.partyId
-        };
-        this.webSocket = !this.websocketUrl ? null : new WebSocketWrapper(this.websocketUrl, this.handleMessage.bind(this), joinMsg);
-    }
+    // join(partyIdValue) {
+    //     this.partyId = partyIdValue ? partyIdValue : '';
+    //     const joinMsg = {
+    //         type: 'join',
+    //         partyId: this.partyId
+    //     };
+    //     this.webSocket = !this.websocketUrl ? null : new WebSocketWrapper(this.websocketUrl, this.handleMessage.bind(this), joinMsg);
+    // }
 
     playSongForCurrentPlayer(url, seek) {
         audio.src = url;
@@ -100,14 +101,14 @@ class Player {
             return;
         }
 
-        if (!fromWebSocket && this.webSocket) {
+        if (!fromWebSocket && getWebSocket()) {
             const message = {
                 type: 'play',
-                partyId: this.partyId,
+                partyId: getPartyId(),
                 url: url, //audio.currentSrc,
                 seek: seek //progress.value
             };
-            this.webSocket.send(message);
+            getWebSocket().send(message);
             return;
         }
 
@@ -115,12 +116,12 @@ class Player {
     }
 
     pause(fromWebSocket = false) {
-        if (!fromWebSocket && this.webSocket) {
+        if (!fromWebSocket && getWebSocket()) {
             const message = {
                 type: 'pause',
-                partyId: this.partyId
+                partyId: getPartyId()
             };
-            this.webSocket.send(message);
+            getWebSocket().send(message);
             return;
         }
 
@@ -133,13 +134,13 @@ class Player {
     }
 
     seek(seekValue, fromWebSocket = false) {
-        if (!fromWebSocket && this.webSocket) {
+        if (!fromWebSocket && getWebSocket()) {
             const message = {
                 type: 'seek',
-                partyId: this.partyId,
+                partyId: getPartyId(),
                 seek: seekValue,
             };
-            this.webSocket.send(message);
+            getWebSocket().send(message);
         }
         this.currentSeekValue = seekValue;
         progress.value = seekValue;
@@ -234,7 +235,7 @@ class Player {
         }
     }
 
-    syncSongListWithParty() {
+    // syncSongListWithParty() {
         // if (this.webSocket) {
         //     const message = {
         //         type: 'sync_song_list',
@@ -242,13 +243,13 @@ class Player {
         //     };
         //     this.webSocket.send(message);
         // }
-    }
+    // }
 
     handleAudioEnded() {
         this.next();
     }
 }
 
-export function initializePlayer(websocketUrl) {
-    return new Player(websocketUrl);
+export function initializePlayer() {
+    return new Player();
 }

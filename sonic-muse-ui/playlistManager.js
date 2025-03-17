@@ -1,6 +1,38 @@
-import {playlist, playlistItems, restApiUrl} from "./constants.js";
+import {allPlaylistItems, musicPlayer, playlistItems, restApiUrl} from "./constants.js";
+import {sendEvent, showErrorScreenOn, showLoadingScreenOn} from "./util";
 
-export class PlaylistManager {
+class PlaylistManager {
+
+    async constructor() {
+        this.setupEventListeners();
+        // await this.syncPlaylistWithServer();
+        // Simulate asynchronous operation with setTimeout (optional, for testing)
+        await new Promise(resolve => {
+            setTimeout(async () => {
+                resolve();
+            }, 2000); // Simulate a 2-second delay
+        });
+    }
+
+    setupEventListeners() {
+        playlistItems.addEventListener('select-song', async (event) => {
+
+            // Update playlist active-item
+            const songId = event.detail.id;
+            allPlaylistItems.forEach(item => {
+                item.classList.toggle('active', item.id === songId);
+            });
+
+            // todo update player
+            const changeEvent = {
+                ...event.detail,
+                type: 'change',
+                target: musicPlayer
+            }
+            sendEvent(changeEvent);
+            // player.play(songUrl, 0);
+        })
+    }
 
     async syncPlaylistWithServer() {
         let songs;
@@ -67,13 +99,23 @@ export class PlaylistManager {
             }
             this.activeSong = songItem;
             this.activeSong.classList.add('active');
-            const playSongEvent = new CustomEvent('selectSong', {
-                detail: song
+            const playSongEvent = new CustomEvent('select-song', {
+                detail: songItem
             });
 
-            document.dispatchEvent(playSongEvent);
+            playlistItems.dispatchEvent(playSongEvent);
         });
 
         playlistItems.appendChild(songItem);
+    }
+}
+
+export function initializePlaylistManager() {
+    showLoadingScreenOn(playlistItems);
+    try {
+        return new PlaylistManager();
+    } catch (error) {
+        console.error('Error during initialization: ', error);
+        showErrorScreenOn(playlistItems);
     }
 }
