@@ -21,12 +21,12 @@ export class PlaylistManager {
     }
 
     populatePlaylist(songs) {
+        playlistItems.innerHTML = "";
         if (songs) {
             songs.forEach(song => {
                 this.addSongToList(song);
             });
         }
-        return playlistItems;
     }
 
     addSongToList(song) {

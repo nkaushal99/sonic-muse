@@ -12,10 +12,19 @@ public class AttendeeMapper extends AbstractMapper
     private static final KeyPrefix KEY_PREFIX = KeyPrefix.ATTENDEE;
 
     private String id;
+    private String name;
     private String partyId;
 
     public AttendeeMapper()
     {
+
+    }
+
+    public AttendeeMapper(AttendeeDTO attendeeDTO)
+    {
+        this(attendeeDTO.getId());
+        this.name = attendeeDTO.getName();
+        this.partyId = attendeeDTO.getPartyId();
     }
 
     public AttendeeMapper(String connectionId)
@@ -52,6 +61,7 @@ public class AttendeeMapper extends AbstractMapper
     {
         AttendeeDTO attendeeDTO = new AttendeeDTO();
         attendeeDTO.setId(id);
+        attendeeDTO.setName(name);
         attendeeDTO.setPartyId(partyId);
         return attendeeDTO;
     }
@@ -64,6 +74,16 @@ public class AttendeeMapper extends AbstractMapper
     public void setId(String id)
     {
         this.id = id;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
     }
 
     public String getPartyId()

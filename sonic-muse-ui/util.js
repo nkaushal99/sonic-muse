@@ -13,21 +13,13 @@ function formatTime(time) {
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 }
-// export const MESSAGE_TYPES = {
-//     CREATE: "CREATE"
-// }
 
 function handleMessage(message = {}) {
-    message.type = message?.type?.toLowerCase?.();
+    message.type = message.type.toLowerCase();
 
     const event = {...message};
-    // const event = {
-    //     type: messageType,
-    //     target: message?.source ?  document.querySelector(`#${message?.source}`): undefined,
-    // };
 
     switch (message.type) {
-        // case MESSAGE_TYPES.CREATE:
         case 'create':
             event.target = roomPanel;
             break;
@@ -70,4 +62,9 @@ function sendEvent(body) {
     console.log('Triggered event:', event);
 }
 
-export {formatTime, handleMessage};
+function getLoadingScreen()
+{
+    return '<div class="loading-screen">Loading...</div>'
+}
+
+export {formatTime, handleMessage, getLoadingScreen};

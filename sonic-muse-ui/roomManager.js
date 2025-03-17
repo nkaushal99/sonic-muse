@@ -11,19 +11,18 @@ import {
     roomInfo,
     roomPanel
 } from "./constants.js";
-import {getPartyId, setPartyId, initializeWebSocket, getWebSocket} from "./globals.js";
+import {getPartyId, setPartyId, initializeWebSocket, getWebSocket, getUserName} from "./globals.js";
 
 export class RoomManager {
     constructor() {
-        this.isHost = false;
         this.setupEventListeners();
     }
 
-    async syncMembersWithServer() {
+    async syncMembersWithServer(roomId) {
         let partyDetails;
 
         try {
-            partyDetails = await fetch(restApiUrl + `/party?id=${getPartyId()}`)
+            partyDetails = await fetch(restApiUrl + `/party?id=${roomId}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
@@ -34,11 +33,15 @@ export class RoomManager {
             console.error('Error fetching songs:', uploadError);
         }
 
-        this.populateMembersList(partyDetails.attendees);
+        this.populateMembersList(partyDetails.hostId, partyDetails.attendees);
     }
 
-    populateMembersList(members) {
+    populateMembersList(hostId, members) {
         membersList.innerHTML = members
+            .map(member => {
+                member.isHost = member.id === hostId;
+                return member;
+            })
             .map(member => this.createMember(member))
             .join("");
     }
@@ -71,22 +74,27 @@ export class RoomManager {
     }
 
     addMember(member) {
+        if (member.name === getUserName())
+            member.name += ' (You)'
         membersList.innerHTML += this.createMember(member);
     }
 
-    removeMember(member) {
-        // todo remove from list
+    removeMember(member, newHostId) {
+        const memberElement = document.getElementById(member.id);
+        memberElement.remove();
 
-        // todo change host if required
+        // Check if the removed member was the host
+        if (memberElement.classList.contains("host")) {
+            this.changeHost(newHostId);
+        }
     }
 
-    changeHost(member) {
-        // todo change host
+    changeHost(newHostId) {
+        document.getElementById(newHostId).classList.add("host");
     }
 
     createRoom(host = null, fromWebSocket = false) {
         if (host && fromWebSocket) {
-            this.isHost = true;
             this.updateRoomInfo(getPartyId());
             this.addMember(host)
             return;
@@ -105,17 +113,14 @@ export class RoomManager {
         if (getPartyId())
             return;
 
+        await this.syncMembersWithServer(roomId);
+
         const msg = buildJoinRoomMsg(roomId);
         initializeWebSocket(msg);
 
         this.updateRoomInfo(roomId);
-        // this.updateMembersList([
-        //     {name: "You", isHost: this.isHost},
-        //     {name: "Alice", isHost: false},
-        //     {name: "Bob", isHost: false},
-        // ]);
+
         this.hideJoinRoomModal();
-        await this.syncMembersWithServer();
         this.displayNotification(`Joined room: ${roomId}`);
     }
 
@@ -124,7 +129,6 @@ export class RoomManager {
         const msg = buildLeaveRoomMsg();
         getWebSocket().send(msg);
         getWebSocket().close();
-        this.isHost = false;
         roomInfo.classList.remove("active");
         membersList.innerHTML = "";
     }
@@ -166,7 +170,7 @@ export class RoomManager {
             setPartyId(event.detail.partyId);
             const host = {
                 id: event.detail.hostId,
-                name: 'You',
+                name: getUserName() + ' (You)',
                 isHost: true,
             }
             this.createRoom(host, true);
@@ -185,20 +189,26 @@ export class RoomManager {
             this.addMember(event.detail.member);
         })
         membersList.addEventListener("member_leave", (event) => {
-            this.removeMember(event.detail.member);
+            this.removeMember(event.detail.member, event.detail.hostId);
         })
     }
 }
 
 function buildCreateRoomMsg() {
     return {
-        type: 'create'
+        type: 'create',
+        member: {
+            name: getUserName()
+        }
     };
 }
 
 function buildJoinRoomMsg(partyIdValue) {
     return {
         type: 'join',
+        member: {
+            name: getUserName()
+        },
         partyId: partyIdValue
     };
 }

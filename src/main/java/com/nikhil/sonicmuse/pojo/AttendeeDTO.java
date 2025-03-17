@@ -3,6 +3,7 @@ package com.nikhil.sonicmuse.pojo;
 public class AttendeeDTO
 {
     private String id;
+    private String name;
     private String partyId;
 
     public String getId()
@@ -13,6 +14,16 @@ public class AttendeeDTO
     public void setId(String id)
     {
         this.id = id;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
     }
 
     public String getPartyId()

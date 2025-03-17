@@ -1,48 +1,41 @@
 import {
-    restApiUrl,
     websocketUrl,
     allPlaylistItems,
-    mainContent, playlist
+    playlistItems
 } from './constants.js';
 
 import {initializePlayer} from "./player.js";
 import {PlaylistManager} from "./playlistManager.js";
 import {RoomManager} from "./roomManager.js";
+import {getLoadingScreen} from "./util.js";
+import {initializeGlobals} from "./globals.js";
 
 let player;
 let currentSong;
 
 document.addEventListener('DOMContentLoaded', async () => {
 
+    initializeGlobals();
+
     const roomManager = new RoomManager();
 
-    const loadingContainer = mainContent;
-    const originalContent = loadingContainer.innerHTML;
-
     // Show loading screen
-    loadingContainer.innerHTML = '<div class="loading-screen">Loading...</div>';
+    const loadingContainer = playlistItems;
+    loadingContainer.innerHTML = getLoadingScreen();
 
     try {
         const playlistManager = new PlaylistManager();
-        const playlistItems = await playlistManager.syncPlaylistWithServer();
+        // await playlistManager.syncPlaylistWithServer();
 
-        // Simulate asynchronous operation with setTimeout
-        // await new Promise(resolve => {
-        //     setTimeout(async () => {
-        //         resolve();
-        //     }, 2000); // Simulate a 2-second delay
-        // });
-
-        // Restore original content (remove loading screen)
-        loadingContainer.innerHTML = originalContent;
+        // Simulate asynchronous operation with setTimeout (optional, for testing)
+        await new Promise(resolve => {
+            setTimeout(async () => {
+                resolve();
+            }, 2000); // Simulate a 2-second delay
+        });
 
         // Replace the playlist container's content
-        const playlistContainer = loadingContainer.getElementById('playlist-items'); // Select the playlist container
-        if (playlistContainer) {
-            playlistContainer.innerHTML = playlistHTML;
-        } else {
-            console.error("Playlist container not found.");
-        }
+        loadingContainer.innerHTML = playlistItems.innerHTML;
     } catch (error) {
         console.error('Error during initialization:', error);
         loadingContainer.innerHTML = '<div class="loading-error">Error loading. Please try again.</div>';

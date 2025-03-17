@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nikhil.sonicmuse.enumeration.WebSocketMessageType;
 import com.nikhil.sonicmuse.mapper.AttendeeMapper;
 import com.nikhil.sonicmuse.mapper.PartyMapper;
+import com.nikhil.sonicmuse.pojo.AttendeeDTO;
 import com.nikhil.sonicmuse.pojo.MemberActionResponse;
 import com.nikhil.sonicmuse.pojo.MemberDTO;
 import com.nikhil.sonicmuse.pojo.WebSocketBaseResponse;
@@ -47,29 +48,19 @@ public class WebSocketService
 
     public void handleConnect(String connectionId)
     {
-        AttendeeMapper attendee = new AttendeeMapper(connectionId);
-        attendeeRepository.put(attendee);
-        LOGGER.info("Attendee: {} created", connectionId);
+        // leaving intentionally, coz we don't know whether to create a room or join one
     }
 
     public void handleDisconnect(String connectionId)
     {
-        AttendeeMapper attendee = attendeeRepository.findAttendeeById(connectionId);
-        if (attendee == null)
-            return;
-
-        String partyId = attendee.getPartyId();
-        PartyMapper partyMapper = partyService.getPartyMapper(partyId);
-        if (partyMapper != null)
+        try
         {
-            partyMapper.removeAttendee(attendee.getId());
-            // todo add a retry mechanism if method fails coz of DynamoDBConditionalCheckFailedException
-            partyService.saveParty(partyMapper);
-            LOGGER.info("Attendee: {} removed from party: {}", connectionId, partyId);
+            handleLeaveRoom(connectionId);
+        } catch (IOException e)
+        {
+            LOGGER.error("Abrupt disconnection", e);
+            throw new RuntimeException(e);
         }
-
-        attendeeRepository.delete(attendee);
-        LOGGER.info("Attendee: {} deleted", connectionId);
     }
 
     public void handleMessage(APIGatewayV2WebSocketEvent event, String connectionId)
@@ -86,9 +77,9 @@ public class WebSocketService
             WebSocketMessageType messageType = WebSocketMessageType.valueOf(type.toUpperCase());
             switch (messageType)
             {
-                case CREATE -> handleCreate(connectionId);
-                case JOIN -> handleJoin(partyId, connectionId);
-                case LEAVE -> handleLeave(partyId, connectionId);
+                case CREATE -> handleCreateRoom(connectionId, json);
+                case JOIN -> handleJoinRoom(connectionId, json);
+                case LEAVE -> handleLeaveRoom(connectionId, json);
                 case PLAY, PAUSE, SEEK, SYNC_SONG_LIST -> broadcastMessage(partyId, payload);
                 default -> LOGGER.warn("Unknown message type: {}", messageType);
             }
@@ -99,10 +90,16 @@ public class WebSocketService
         }
     }
 
-    private void handleCreate(String connectionId) throws JsonProcessingException
+    private void handleCreateRoom(String connectionId, JsonNode json) throws JsonProcessingException
     {
         PartyMapper party = partyService.createParty(connectionId);
         partyService.saveParty(party);
+
+        AttendeeDTO attendeeDTO = new AttendeeDTO();
+        attendeeDTO.setId(connectionId);
+        attendeeDTO.setName(Optional.ofNullable(json.get("member").get("name")).map(JsonNode::asText).orElse(null));
+        attendeeDTO.setPartyId(party.getId());
+        saveAttendee(attendeeDTO);
 
         WebSocketBaseResponse responseBody = new WebSocketBaseResponse();
         responseBody.setType(WebSocketMessageType.CREATE);
@@ -115,14 +112,23 @@ public class WebSocketService
         LOGGER.info("Connection: {} created party: {}", connectionId, party.getId());
     }
 
-    private void handleJoin(String partyId, String connectionId) throws IOException
+    private void handleJoinRoom(String connectionId, JsonNode json) throws IOException
     {
+        String partyId = Optional.of(json.get("partyId"))
+                .map(JsonNode::asText)
+                .orElse(null);
         PartyMapper party = partyService.getPartyMapper(partyId);
         if (party == null)
             throw new RuntimeException("No party found for id: " + partyId);
 
-        party.addAttendee(connectionId);;
+        party.addAttendee(connectionId);
         partyService.saveParty(party);
+
+        AttendeeDTO attendeeDTO = new AttendeeDTO();
+        attendeeDTO.setId(connectionId);
+        attendeeDTO.setName(Optional.ofNullable(json.get("member").get("name")).map(JsonNode::asText).orElse(null));
+        attendeeDTO.setPartyId(party.getId());
+        saveAttendee(attendeeDTO);
 
         MemberActionResponse responseBody = new MemberActionResponse();
         responseBody.setType(WebSocketMessageType.MEMBER_JOIN);
@@ -131,7 +137,7 @@ public class WebSocketService
 
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setId(connectionId);
-        memberDTO.setName("Nikhil " + party.getAttendeeIds().size());
+        memberDTO.setName(attendeeDTO.getName());
         responseBody.setMember(memberDTO);
 
         String message = objectMapper.writeValueAsString(responseBody);
@@ -140,11 +146,35 @@ public class WebSocketService
         LOGGER.info("Connection: {} joined party: {}", connectionId, partyId);
     }
 
-    private void handleLeave(String partyId, String connectionId) throws IOException
+    private void handleLeaveRoom(String connectionId) throws IOException
     {
+        handleLeaveRoom(connectionId, null);
+    }
+
+    private void handleLeaveRoom(String connectionId, JsonNode json) throws IOException
+    {
+        JsonNode partyNode = Optional.ofNullable(json).map(j -> j.get("partyId")).orElse(null);
+        String partyId = Optional.ofNullable(partyNode)
+                .map(JsonNode::asText)
+                .orElse(
+                        // try to extract partyId from attendee, if not disconnected already
+                        Optional.ofNullable(attendeeRepository.findAttendeeById(connectionId))
+                                .map(AttendeeMapper::getPartyId)
+                                .orElse(null)
+                );
+
+        if (partyId == null)
+        {
+            LOGGER.warn("No party found for connection: {}", connectionId);
+        }
+
         PartyMapper party = partyService.getPartyMapper(partyId);
         party.removeAttendee(connectionId);
         partyService.saveParty(party);
+
+        AttendeeMapper attendeeMapper = attendeeRepository.findAttendeeById(connectionId);
+        if (attendeeMapper != null)
+            attendeeRepository.delete(attendeeMapper);
 
         MemberActionResponse responseBody = new MemberActionResponse();
         responseBody.setType(WebSocketMessageType.MEMBER_LEAVE);
@@ -156,9 +186,9 @@ public class WebSocketService
         responseBody.setMember(memberDTO);
 
         String message = objectMapper.writeValueAsString(responseBody);
-        broadcastMessage(connectionId, message);
+        broadcastMessage(partyId, message);
 
-        LOGGER.info("Connection: {} left party: {}", connectionId, party.getId());
+        LOGGER.info("Connection: {} left party: {}", connectionId, partyId);
     }
 
     private void broadcastMessage(String partyId, String message) throws IOException
@@ -180,6 +210,13 @@ public class WebSocketService
                 }
             }
         }
+    }
+
+    private void saveAttendee(AttendeeDTO attendeeDTO)
+    {
+        AttendeeMapper attendee = new AttendeeMapper(attendeeDTO);
+        attendeeRepository.put(attendee);
+        LOGGER.info("Attendee: {} created", attendeeDTO.getId());
     }
 
     private void sendMessage(String connectionId, String message) throws GoneException

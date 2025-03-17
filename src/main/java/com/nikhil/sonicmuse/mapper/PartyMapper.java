@@ -96,9 +96,16 @@ public class PartyMapper extends AbstractMapper
 
         // if party has no attendee, then delete party
         if (getAttendeeIds().isEmpty())
+        {
             this.markForDeletion();
+            return;
+        }
 
-        // todo check if host was removed
+        // check if host was removed
+        if (this.getHostId().equals(attendeeId))
+        {
+            this.setHostId(getAttendeeIds().stream().findAny().get());
+        }
     }
 
     public String getId()
