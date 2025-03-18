@@ -37,7 +37,9 @@ public class SongService
     {
         SongMapper songMapper = new SongMapper();
         songMapper.setTitle(songDTO.getTitle());
-        songMapper.setArtist(songDTO.getArtist());
+        songMapper.setArtists(songDTO.getArtists());
+        songMapper.setDuration(songDTO.getDuration());
+        songMapper.setAlbum(songDTO.getAlbum());
         String key = "/SYSTEM/" + songMapper.getId();
         songMapper.setS3Key(key);
         songRepository.put(songMapper);
@@ -54,7 +56,9 @@ public class SongService
         SongDTO songDTO = new SongDTO();
         songDTO.setId(songMapper.getId());
         songDTO.setTitle(songMapper.getTitle());
-        songDTO.setArtist(songMapper.getArtist());
+        songDTO.setArtists(songMapper.getArtists());
+        songDTO.setDuration(songMapper.getDuration());
+        songDTO.setAlbum(songMapper.getAlbum());
         songDTO.setUrl(songUrl);
         return songDTO;
     }

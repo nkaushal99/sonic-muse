@@ -70,7 +70,7 @@ class PlaylistManager {
 
         const songArtist = document.createElement('span');
         songArtist.classList.add('song-artist');
-        songArtist.textContent = song.artist;
+        songArtist.textContent = song.artists;
         songInfo.appendChild(songArtist);
 
         const songDuration = document.createElement('span');

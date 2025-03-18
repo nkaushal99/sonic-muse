@@ -4,7 +4,9 @@ public class SongDTO
 {
     private String id;
     private String title;
-    private String artist;
+    private String artists;
+    private String duration;
+    private String album;
     private String url;
 
     public String getId()
@@ -27,14 +29,34 @@ public class SongDTO
         this.title = title;
     }
 
-    public String getArtist()
+    public String getArtists()
     {
-        return artist;
+        return artists;
     }
 
-    public void setArtist(String artist)
+    public void setArtists(String artists)
     {
-        this.artist = artist;
+        this.artists = artists;
+    }
+
+    public String getDuration()
+    {
+        return duration;
+    }
+
+    public void setDuration(String duration)
+    {
+        this.duration = duration;
+    }
+
+    public String getAlbum()
+    {
+        return album;
+    }
+
+    public void setAlbum(String album)
+    {
+        this.album = album;
     }
 
     public String getUrl()
