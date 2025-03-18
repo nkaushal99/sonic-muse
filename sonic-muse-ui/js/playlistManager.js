@@ -83,9 +83,7 @@ class PlaylistManager {
         songItem.addEventListener('click', (event) => {
             event.stopPropagation();
 
-            // this.updateActiveSong(event.target);
             playSong(song);
-
         });
 
         playlistItems.appendChild(songItem);

@@ -16,6 +16,7 @@ import {
 import {formatTime, updateActiveSong} from "./util.js";
 import {getPartyId, getWebSocket} from "./globals.js";
 
+
 class Player {
     constructor() {
         this.loopMode = 'none';
@@ -95,7 +96,13 @@ class Player {
         updateActiveSong(song);
         audio.src = song.url;
         this.currentSong = song;
-        this.currentSeekValue = seek;
+        const songItem = document.getElementById(song.id);
+
+        const title = songItem.querySelector(".song-title").textContent;
+        const artist = songItem.querySelector(".song-artist").textContent;
+
+        document.getElementById("track-title").textContent = title;
+        document.getElementById("track-artist").textContent = artist;
         audio.onloadedmetadata = () => {
             this.currentSeekValue = seek;
             progress.value = seek;

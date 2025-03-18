@@ -75,7 +75,7 @@ class RoomManager {
 
     addMember(member) {
         if (member.name === getUserName())
-            member.name += ' (You)'
+            member.name += ' (You)';
         membersList.innerHTML += this.createMember(member);
     }
 
@@ -93,9 +93,28 @@ class RoomManager {
         document.getElementById(newHostId).classList.add("host");
     }
 
+    hideRoomControls() {
+        joinButton.style.display = "none";
+        createButton.style.display = "none";
+    }
+
+    displayRoomControls() {
+        joinButton.style.display = "inline-block";
+        createButton.style.display = "inline-block";
+    }
+
+    membersHeading()
+    {
+        const element = document.createElement("h3");
+        element.textContent = "Members";
+        return element;
+    }
+
     createRoom(host = null, fromWebSocket = false) {
         if (host && fromWebSocket) {
+            document.querySelector('.room-members').prepend(this.membersHeading());
             this.updateRoomInfo(getPartyId());
+            this.hideRoomControls();
             this.addMember(host)
             return;
         }
@@ -113,12 +132,14 @@ class RoomManager {
         if (getPartyId())
             return;
 
+        document.querySelector('.room-members').prepend(this.membersHeading());
         await this.syncMembersWithServer(roomId);
 
         const msg = buildJoinRoomMsg(roomId);
         initializeWebSocket(msg);
 
         this.updateRoomInfo(roomId);
+        this.hideRoomControls();
 
         this.hideJoinRoomModal();
         this.displayNotification(`Joined room: ${roomId}`);
@@ -131,6 +152,8 @@ class RoomManager {
         getWebSocket().close();
         roomInfo.classList.remove("active");
         membersList.innerHTML = "";
+        this.displayRoomControls();
+        document.querySelector('.room-members h3').remove();
     }
 
     showJoinRoomModal() {
