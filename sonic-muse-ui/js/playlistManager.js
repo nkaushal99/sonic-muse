@@ -55,7 +55,7 @@ class PlaylistManager {
         songItem.classList.add('playlist-item');
 
         const songThumbnail = document.createElement('img');
-        songThumbnail.src = 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=50&h=50&fit=crop';
+        songThumbnail.src = "static/sm-transparent.png";//'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=50&h=50&fit=crop';
         songThumbnail.alt = song.name;
         songItem.appendChild(songThumbnail);
 

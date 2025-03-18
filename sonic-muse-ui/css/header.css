@@ -81,7 +81,12 @@
 
 .user-email {
     font-size: 0.9rem;
-    padding-bottom: 0.5rem;
+}
+
+.user-name {
+    color: var(--primary-clr);
+    font-weight: bold;
+    padding-bottom: 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 

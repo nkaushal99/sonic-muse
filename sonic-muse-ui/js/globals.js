@@ -56,6 +56,7 @@ function generateRandomName() {
 function initializeGlobals()
 {
     userName = generateRandomName();
+    document.querySelector(".user-name").textContent = userName;
 }
 
 // function getSync()

@@ -22,17 +22,18 @@
         <span>SonicMuse</span>
     </div>
     <div class="auth-controls">
-        <button id="signin-btn" class="auth-btn primary">Sign In</button>
-        <div id="user-menu" class="user-menu hidden">
+<!--        <button id="signin-btn" class="auth-btn primary">Sign In</button>-->
+        <div id="user-menu" class="user-menu">
             <button class="user-btn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
                     <circle cx="12" cy="7" r="4"/>
                 </svg>
             </button>
             <div class="dropdown-menu">
-                <span class="user-email">user@example.com</span>
-                <button id="logout-btn">Logout</button>
+                <span class="user-name">{placeholder}</span>
+                <span class="user-email">user@sonicmuse.com</span>
+<!--                <button id="logout-btn">Logout</button>-->
             </div>
         </div>
     </div>
@@ -42,33 +43,33 @@
     <div class="playlist">
         <h3>Playlist</h3>
         <ul id="playlist-items">
-            <li class="playlist-item active">
-                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=50&h=50&fit=crop"
-                     alt="Midnight Rain">
-                <div class="song-info">
-                    <span class="song-title">Midnight Rain</span>
-                    <span class="song-artist">Dream Echoes</span>
-                </div>
-                <span class="song-duration">3:45</span>
-            </li>
-            <li class="playlist-item">
-                <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=50&h=50&fit=crop"
-                     alt="Neon Lights">
-                <div class="song-info">
-                    <span class="song-title">Neon Lights</span>
-                    <span class="song-artist">Urban Pulse</span>
-                </div>
-                <span class="song-duration">4:20</span>
-            </li>
-            <li class="playlist-item">
-                <img src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=50&h=50&fit=crop"
-                     alt="Sunset Drive">
-                <div class="song-info">
-                    <span class="song-title">Sunset Drive</span>
-                    <span class="song-artist">Coastal Waves</span>
-                </div>
-                <span class="song-duration">3:55</span>
-            </li>
+<!--            <li class="playlist-item active">-->
+<!--                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=50&h=50&fit=crop"-->
+<!--                     alt="Midnight Rain">-->
+<!--                <div class="song-info">-->
+<!--                    <span class="song-title">Midnight Rain</span>-->
+<!--                    <span class="song-artist">Dream Echoes</span>-->
+<!--                </div>-->
+<!--                <span class="song-duration">3:45</span>-->
+<!--            </li>-->
+<!--            <li class="playlist-item">-->
+<!--                <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=50&h=50&fit=crop"-->
+<!--                     alt="Neon Lights">-->
+<!--                <div class="song-info">-->
+<!--                    <span class="song-title">Neon Lights</span>-->
+<!--                    <span class="song-artist">Urban Pulse</span>-->
+<!--                </div>-->
+<!--                <span class="song-duration">4:20</span>-->
+<!--            </li>-->
+<!--            <li class="playlist-item">-->
+<!--                <img src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=50&h=50&fit=crop"-->
+<!--                     alt="Sunset Drive">-->
+<!--                <div class="song-info">-->
+<!--                    <span class="song-title">Sunset Drive</span>-->
+<!--                    <span class="song-artist">Coastal Waves</span>-->
+<!--                </div>-->
+<!--                <span class="song-duration">3:55</span>-->
+<!--            </li>-->
         </ul>
     </div>
 </main>
@@ -106,11 +107,12 @@
 
 <footer class="music-player">
     <div class="now-playing">
-        <img id="cover-art" src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop"
-             alt="Album cover">
+<!--        <img id="cover-art" src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop"-->
+<!--             alt="Album cover">-->
+        <img src="static/sm-transparent.png" alt="Album cover" height="80" width="80">
         <div class="track-info">
-            <h2 id="track-title">Midnight Rain</h2>
-            <p id="track-artist">Dream Echoes</p>
+            <h2 id="track-title">Title</h2>
+            <p id="track-artist">Artist</p>
         </div>
     </div>
 
