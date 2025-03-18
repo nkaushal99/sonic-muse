@@ -10,22 +10,39 @@ import {
     currentTimeEl,
     durationEl,
     nextBtn,
-    prevBtn, musicPlayer
+    prevBtn,
+    musicPlayer
 } from './constants.js';
-import {formatTime} from "./util.js";
+import {formatTime, updateActiveSong} from "./util.js";
 import {getPartyId, getWebSocket} from "./globals.js";
 
 class Player {
     constructor() {
         this.loopMode = 'none';
-        this.currentSongUrl = null;
+        this.currentSong = null;
         this.currentSeekValue = 0;
         this.setupEventListeners();
     }
 
     setupEventListeners() {
-        musicPlayer.addEventListener('change', event => {
-            this.play(event.url, 0);
+        // musicPlayer.addEventListener('sync-beacon', event => {
+        //     this.syncPlayer(event.detail);
+        // });
+
+        musicPlayer.addEventListener('play-song', event => {
+            this.play(event.detail, 0);
+        });
+
+        musicPlayer.addEventListener('play', (event) => {
+            this.play(event.detail, event.detail.seek, true);
+        });
+
+        musicPlayer.addEventListener('pause', () => {
+            this.pause(true);
+        })
+
+        musicPlayer.addEventListener('seek', (event) => {
+            this.seek(event.detail.seek, true);
         })
 
         audio.addEventListener('ended', () => this.handleAudioEnded());
@@ -64,24 +81,20 @@ class Player {
         nextBtn.addEventListener('click', () => this.next());
 
         prevBtn.addEventListener('click', () => this.prev());
-
-        musicPlayer.addEventListener('play', (message) => {
-            this.play(message.url, message.seek, true);
-        })
     }
 
-    // join(partyIdValue) {
-    //     this.partyId = partyIdValue ? partyIdValue : '';
-    //     const joinMsg = {
-    //         type: 'join',
-    //         partyId: this.partyId
-    //     };
-    //     this.webSocket = !this.websocketUrl ? null : new WebSocketWrapper(this.websocketUrl, this.handleMessage.bind(this), joinMsg);
+    // syncPlayer(song, seek) {
+    //     if (getSync())
+    //     {
+    //         this.playSongForCurrentPlayer(song, seek);
+    //         setSync(false);
+    //     }
     // }
 
-    playSongForCurrentPlayer(url, seek) {
-        audio.src = url;
-        this.currentSongUrl = url;
+    playSongForCurrentPlayer(song, seek) {
+        updateActiveSong(song);
+        audio.src = song.url;
+        this.currentSong = song;
         this.currentSeekValue = seek;
         audio.onloadedmetadata = () => {
             this.currentSeekValue = seek;
@@ -95,8 +108,8 @@ class Player {
         };
     }
 
-    play(url = this.currentSongUrl, seek = this.currentSeekValue, fromWebSocket = false) {
-        if (!url) {
+    play(song = this.currentSong, seek = this.currentSeekValue, fromWebSocket = false) {
+        if (!song.url) {
             alert("Pick a song first!");
             return;
         }
@@ -105,14 +118,15 @@ class Player {
             const message = {
                 type: 'play',
                 partyId: getPartyId(),
-                url: url, //audio.currentSrc,
-                seek: seek //progress.value
+                id: song.id,
+                url: song.url,
+                seek: seek
             };
             getWebSocket().send(message);
             return;
         }
 
-        this.playSongForCurrentPlayer(url, seek);
+        this.playSongForCurrentPlayer(song, seek);
     }
 
     pause(fromWebSocket = false) {
@@ -195,14 +209,14 @@ class Player {
     }
 
     next() {
-        if (!this.currentSongUrl) {
+        if (!this.currentSong) {
             alert("Pick a song first!");
             return;
         }
 
         if (this.loopMode === 'one') {
             // Stay on current song
-            this.play(this.currentSongUrl, 0);
+            this.play(this.currentSong, 0);
             return;
         } else {
             // go to next song
@@ -219,14 +233,14 @@ class Player {
     }
 
     prev() {
-        if (!this.currentSongUrl) {
+        if (!this.currentSong) {
             alert("Pick a song first!");
             return;
         }
 
         if (progress.value > 5) {
             // If more than 5% into song, restart current song
-            this.play(this.currentSongUrl, 0);
+            this.play(this.currentSong, 0);
             return;
         } else {
             // Go to previous song

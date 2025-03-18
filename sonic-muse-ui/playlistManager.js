@@ -1,36 +1,15 @@
-import {allPlaylistItems, musicPlayer, playlistItems, restApiUrl} from "./constants.js";
-import {sendEvent, showErrorScreenOn, showLoadingScreenOn} from "./util";
+import {playlist, playlistItems, restApiUrl} from "./constants.js";
+import {playSong, showErrorScreenOn, showLoadingScreenOn} from "./util.js";
 
 class PlaylistManager {
 
-    async constructor() {
+    constructor() {
         this.setupEventListeners();
-        // await this.syncPlaylistWithServer();
-        // Simulate asynchronous operation with setTimeout (optional, for testing)
-        await new Promise(resolve => {
-            setTimeout(async () => {
-                resolve();
-            }, 2000); // Simulate a 2-second delay
-        });
     }
 
     setupEventListeners() {
-        playlistItems.addEventListener('select-song', async (event) => {
-
-            // Update playlist active-item
-            const songId = event.detail.id;
-            allPlaylistItems.forEach(item => {
-                item.classList.toggle('active', item.id === songId);
-            });
-
-            // todo update player
-            const changeEvent = {
-                ...event.detail,
-                type: 'change',
-                target: musicPlayer
-            }
-            sendEvent(changeEvent);
-            // player.play(songUrl, 0);
+        playlist.addEventListener('update-active-song', (event) => {
+            this.updateActiveSong(event.detail);
         })
     }
 
@@ -61,8 +40,18 @@ class PlaylistManager {
         }
     }
 
+    updateActiveSong(song) {
+        if (this.activeSong)
+        {
+            this.activeSong.classList.remove('active');
+        }
+        this.activeSong = document.getElementById(song.id);
+        this.activeSong.classList.add('active');
+    }
+
     addSongToList(song) {
         const songItem = document.createElement('li');
+        songItem.id = song.id;
         songItem.classList.add('playlist-item');
 
         const songThumbnail = document.createElement('img');
@@ -89,31 +78,32 @@ class PlaylistManager {
         songDuration.textContent = song.duration;
         songItem.appendChild(songDuration);
 
-        songItem.dataset.id = song.id;
         songItem.dataset.url = song.url;
 
-        songItem.addEventListener('click', () => {
-            if (this.activeSong)
-            {
-                this.activeSong.classList.remove('active');
-            }
-            this.activeSong = songItem;
-            this.activeSong.classList.add('active');
-            const playSongEvent = new CustomEvent('select-song', {
-                detail: songItem
-            });
+        songItem.addEventListener('click', (event) => {
+            event.stopPropagation();
 
-            playlistItems.dispatchEvent(playSongEvent);
+            // this.updateActiveSong(event.target);
+            playSong(song);
+
         });
 
         playlistItems.appendChild(songItem);
     }
 }
 
-export function initializePlaylistManager() {
+export async function initializePlaylistManager() {
     showLoadingScreenOn(playlistItems);
     try {
-        return new PlaylistManager();
+        const player = new PlaylistManager();
+        await player.syncPlaylistWithServer();
+
+        // Simulate asynchronous operation with setTimeout
+        // await new Promise(resolve => {
+        //     setTimeout(async () => {
+        //         resolve();
+        //     }, 2000); // Simulate a 2-second delay
+        // });
     } catch (error) {
         console.error('Error during initialization: ', error);
         showErrorScreenOn(playlistItems);

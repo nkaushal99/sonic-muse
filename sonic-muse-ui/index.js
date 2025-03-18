@@ -3,9 +3,9 @@ import {initializePlaylistManager} from "./playlistManager.js";
 import {initializeRoomManager} from "./roomManager.js";
 import {initializeGlobals} from "./globals.js";
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     initializeGlobals();
     initializeRoomManager();
-    initializePlaylistManager();
     initializePlayer();
+    await initializePlaylistManager();
 });

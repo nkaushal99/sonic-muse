@@ -17,47 +17,45 @@ function formatTime(time) {
 function handleMessage(message = {}) {
     message.type = message.type.toLowerCase();
 
-    const event = {...message};
+    const event = {
+        ...message,
+        type: message.type
+    };
 
     switch (message.type) {
         case 'create':
             event.target = roomPanel;
             break;
+
         case 'member_join':
-            event.target = membersList;
-            break;
         case 'member_leave':
             event.target = membersList;
             break;
+
         case 'play':
-            event.target = musicPlayer;
-            // this.play(message.url, message.seek, true);
-            break;
         case 'pause':
-            event.target = musicPlayer;
-            // this.pause(true);
-            break;
         case 'seek':
             event.target = musicPlayer;
-            // this.seek(message.seek, true);
             break;
-        case 'sync_song_list':
-            event.target = playlist;
-            // await this.syncSongListWithParty();
-            break;
+
+        // case 'sync_song_list':
+        //     event.target = playlist;
+        //     // await this.syncSongListWithParty();
+        //     break;
         default:
             console.log('Unknown message:', message);
+            return;
     }
 
     sendEvent(event);
 }
 
-function sendEvent(body) {
-    const event = new CustomEvent(body.type, {
-        detail: body
+function sendEvent(payload) {
+    const event = new CustomEvent(payload.type, {
+        detail: payload,
     });
 
-    const target = body.target;
+    const target = payload.target;
     target.dispatchEvent(event);
     console.log('Triggered event:', event);
 }
@@ -70,4 +68,23 @@ function showErrorScreenOn(container) {
     container.innerHTML = '<div class="loading-error">Error loading. Please try again.</div>';
 }
 
-export {formatTime, handleMessage, sendEvent, showLoadingScreenOn, showErrorScreenOn};
+function updateActiveSong(song)
+{
+    const event = {
+        ...song,
+        type: 'update-active-song',
+        target: playlist
+    }
+    sendEvent(event);
+}
+
+function playSong(song) {
+    const event = {
+        ...song,
+        type: 'play-song',
+        target: musicPlayer
+    }
+    sendEvent(event);
+}
+
+export {formatTime, handleMessage, sendEvent, showLoadingScreenOn, showErrorScreenOn, updateActiveSong, playSong};

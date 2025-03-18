@@ -6,6 +6,7 @@ let userName = null;
 
 let partyId = null;
 let webSocket = null;
+// let sync = false;
 
 function initializeWebSocket(msg) {
     webSocket = new WebSocketWrapper(websocketUrl, handleMessage, msg);
@@ -57,11 +58,22 @@ function initializeGlobals()
     userName = generateRandomName();
 }
 
+// function getSync()
+// {
+//     return sync;
+// }
+//
+// function setSync(bool) {
+//     sync = bool;
+// }
+
 export {
     initializeWebSocket,
     getUserName,
     getPartyId,
     setPartyId,
     getWebSocket,
-    initializeGlobals
+    initializeGlobals,
+    // getSync,
+    // setSync,
 };
