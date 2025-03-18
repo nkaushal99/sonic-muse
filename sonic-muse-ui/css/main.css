@@ -1,0 +1,18 @@
+.main-content {
+    padding: 2rem;
+    overflow-y: auto;
+    grid-column: 1;
+    grid-row: 2;
+    height: calc(100vh - 180px);
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.main-content::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.main-content {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}

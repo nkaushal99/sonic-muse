@@ -1,0 +1,223 @@
+.music-player {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    /*height: 150px;*/
+    background: black;
+    backdrop-filter: blur(10px);
+    padding: 1rem 2rem;
+    grid-column: 1 / -1;
+    grid-row: 3;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 2rem;
+}
+
+.now-playing {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 300px;
+}
+
+#cover-art {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.track-info h2 {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.track-info p {
+    color: #b3b3b3;
+    font-size: 0.85rem;
+}
+
+.player-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.progress-bar {
+    background: rgba(255, 255, 255, 0.1);
+    height: 20%;
+    border-radius: 2px;
+    cursor: pointer;
+    /*position: relative;*/
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.progress {
+    --slider-value: 0%;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 80%;
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(to right, var(--primary-clr) 0%, var(--primary-clr) var(--slider-value),
+    rgba(255, 255, 255, 0.1) var(--slider-value), rgba(255, 255, 255, 0.1) 100%);
+    outline: none;
+}
+
+.progress::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.5s;
+}
+
+
+.progress:hover::-webkit-slider-thumb {
+    opacity: 1;
+    background: purple;
+    transform: scale(1.2);
+}
+
+/*.progress::-webkit-slider-thumb:hover {*/
+/*    background: purple;*/
+/*    transform: scale(1.2);*/
+/*}*/
+
+.progress::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border: none;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.progress::-moz-range-thumb:hover {
+    background: purple;
+    transform: scale(1.2);
+}
+
+.time-slider {
+    -webkit-appearance: none;
+    background-color: var(--primary-clr);
+    accent-color: var(--primary-clr);
+}
+
+.time-passed {
+    font-size: 0.8rem;
+    width: 10%;
+}
+
+.duration {
+    font-size: 0.8rem;
+    width: 10%;
+}
+
+/*.time-info {*/
+/*    display: flex;*/
+/*    justify-content: space-between;*/
+/*    font-size: 0.8rem;*/
+/*    color: #b3b3b3;*/
+/*    width: 100%;*/
+/*}*/
+
+.controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 1rem;
+}
+
+.control-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.control-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.control-btn.active {
+    color: var(--primary-clr);
+}
+
+.play-btn {
+    background: var(--primary-clr);
+}
+
+.play-btn:hover {
+    background: purple;
+    transform: scale(1.05);
+}
+
+.volume-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 200px;
+}
+
+.volume-slider {
+    --slider-value: 70%;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100px;
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(to right, var(--primary-clr) 0%, var(--primary-clr) var(--slider-value, 0%), rgba(255, 255, 255, 0.1) var(--slider-value, 0%), rgba(255, 255, 255, 0.1) 100%);
+    outline: none;
+    transition: all 0.2s;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+    background: purple;
+    transform: scale(1.2);
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border: none;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.volume-slider::-moz-range-thumb:hover {
+    background: purple;
+    transform: scale(1.2);
+}
+
+#hidden-audio {
+    display: none;
+}

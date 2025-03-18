@@ -1,0 +1,77 @@
+:root {
+    --header: #000000;
+    --main: #121212;
+    --section: #1E1E1E;
+    --container: #282828;
+
+    --primary-text: #E0E0E0;
+    --primary-clr: #BB86FC;
+
+    --active: #400241;
+    --disabled-text: #616161;
+}
+
+.primary {
+    background-color: #BB86FC !important;
+    color: #000000 !important;
+}
+
+.primary:hover {
+    background-color: purple !important;
+    color: #EDEDED !important;
+}
+
+.secondary {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #EDEDED !important;
+}
+
+.secondary:hover {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    color: #E0E0E0 !important;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--main);
+    color: var(--primary-text);
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    grid-template-rows: 60px 1fr 100px;
+    position: relative;
+    overflow: hidden;
+}
+
+h3 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}

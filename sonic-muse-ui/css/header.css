@@ -1,0 +1,101 @@
+.main-header {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    background: var(--header);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--primary-clr);
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.auth-controls {
+    position: relative;
+}
+
+.auth-btn {
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.auth-btn:hover {
+    transform: translateY(-1px);
+}
+
+.user-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.user-menu.hidden {
+    display: none;
+}
+
+.user-btn {
+    background: none;
+    border: none;
+    color: var(--primary-clr);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.user-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--section);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    min-width: 200px;
+    display: none;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.user-menu:hover .dropdown-menu {
+    display: flex;
+}
+
+.user-email {
+    font-size: 0.9rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#logout-btn {
+    background: none;
+    border: none;
+    color: #ff5555;
+    cursor: pointer;
+    text-align: left;
+    padding: 0.25rem 0;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+#logout-btn:hover {
+    color: #ff7777;
+}
