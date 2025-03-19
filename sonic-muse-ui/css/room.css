@@ -1,7 +1,7 @@
 .room-panel {
     background: var(--container);
     backdrop-filter: blur(10px);
-    padding: 2rem;
+    padding: 1rem;
     border-left: 1px solid rgba(255, 255, 255, 0.1);
     grid-column: 2;
     grid-row: 2;
@@ -33,9 +33,51 @@
 }
 
 .room-id {
-    font-size: 0.9rem;
-    color: white;
+    display: flex;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 8px 12px;
+    border-radius: 5px;
     margin-bottom: 0.5rem;
+    font-family: monospace; /* Monospace font for better readability of IDs */
+    word-break: break-all; /* Prevents long IDs from overflowing */
+    color: black;
+}
+
+.copyable-id {
+    flex-grow: 1; /* Allows the ID to take up available space */
+    margin-right: 8px; /* Spacing between ID and button */
+}
+
+.copy-btn {
+    background-color: #e0e0e0;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.copy-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.copy-btn:hover {
+    background-color: #d0d0d0;
+}
+
+.tick-animation {
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    opacity: 0;
+    transform: scale(0.5);
+}
+
+.tick-animation.show {
+    opacity: 1;
+    transform: scale(1);
 }
 
 .btn.danger {

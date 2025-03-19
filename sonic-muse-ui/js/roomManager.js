@@ -199,6 +199,28 @@ class RoomManager {
             this.createRoom(host, true);
         })
 
+        document.getElementById('copy-room-id').addEventListener('click', function() {
+            const roomId = document.getElementById('current-room-id').textContent;
+            const clipboardIcon = document.getElementById('clipboard-icon');
+            const tickIcon = document.getElementById('tick-icon');
+
+            navigator.clipboard.writeText(roomId).then(() => {
+                clipboardIcon.style.display = 'none';
+                tickIcon.style.display = 'block';
+                tickIcon.classList.add('show'); // Add the 'show' class for animation
+
+                setTimeout(() => {
+                    tickIcon.classList.remove('show'); // Remove 'show' class for fade out
+                    setTimeout(() => {
+                        clipboardIcon.style.display = 'block';
+                        tickIcon.style.display = 'none';
+                    }, 300); // Wait for the fade out animation to finish
+                }, 2000); // 2 seconds
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+            });
+        });
+
         createButton.addEventListener("click", () => this.createRoom());
         joinButton.addEventListener("click", () => this.showJoinRoomModal());
         leaveButton.addEventListener("click", () => this.leaveRoom());
