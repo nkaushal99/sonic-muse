@@ -1,6 +1,8 @@
 # Sonic Muse 🎵
 Sonic Muse is a real-time music streaming web application that allows users to listen to songs together virtually. Built using vanilla JavaScript, Java, and AWS services, it provides a seamless, synchronized listening experience using WebSocket APIs.
 
+![SonicMuse](https://github.com/user-attachments/assets/c905d6b9-9a7e-4a72-9348-4d141e5621fe)
+
 ## Features 🚀
 - **Real-time Music Sync** – Users can listen to songs together in perfect sync.
 - **WebSockets for Communication** – Ensures low-latency song synchronization across devices.
